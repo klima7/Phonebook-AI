@@ -1,0 +1,33 @@
+services:
+
+  postgres:
+    image: postgres:17
+    restart: always
+    shm_size: 1000gb
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U user -d postgres -h 127.0.0.1
+      interval: 5s
+      retries: 3
+
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
