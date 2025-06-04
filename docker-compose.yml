@@ -1,3 +1,5 @@
+name: phonebook
+
 services:
 
   postgres:
@@ -16,18 +18,26 @@ services:
       retries: 3
 
 
-  app:
+  backend:
     build:
-      context: .
+      context: backend
       dockerfile: Dockerfile
-    container_name: app
     restart: always
-    ports:
-      - 8000:8000
     volumes:
-      - .:/app
+      - ./backend:/app
     env_file:
       - .env
     depends_on:
       postgres:
         condition: service_healthy
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+

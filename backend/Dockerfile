@@ -19,7 +19,7 @@ RUN addgroup --gid $GROUP_ID user && \
 # install dependencies
 USER user
 COPY poetry.lock pyproject.toml ./
-RUN poetry install --no-cache
+RUN poetry install --no-cache --no-root
 
 # copy everything
 COPY . .
