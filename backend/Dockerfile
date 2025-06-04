@@ -24,4 +24,4 @@ RUN poetry install --no-cache --no-root
 # copy everything
 COPY . .
 
-CMD poetry run gunicorn -b 0.0.0.0:8000 --reload phonebook.wsgi
+CMD poetry run bash start.sh

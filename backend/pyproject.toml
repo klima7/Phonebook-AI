@@ -12,7 +12,8 @@ dependencies = [
     "django (>=5.2.2,<6.0.0)",
     "djangorestframework (>=3.16.0,<4.0.0)",
     "gunicorn (>=23.0.0,<24.0.0)",
-    "dj-database-url (>=3.0.0,<4.0.0)"
+    "dj-database-url (>=3.0.0,<4.0.0)",
+    "psycopg2 (>=2.9.10,<3.0.0)"
 ]
 
 
