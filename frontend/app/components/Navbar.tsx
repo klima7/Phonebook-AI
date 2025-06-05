@@ -3,7 +3,7 @@ import { Link } from "react-router";
 export default function Navbar() {
   return (
     <nav className="bg-blue-600 p-4 text-white">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container mx-auto px-4 flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
           Phonebook
         </Link>
