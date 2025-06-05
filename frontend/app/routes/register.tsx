@@ -7,24 +7,47 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     // Validate passwords match
     if (password !== confirmPassword) {
       setError("Passwords do not match");
+      setIsLoading(false);
       return;
     }
 
-    // Here you would typically make an API call to register the user
-    console.log("Registration attempt with:", { username, password });
-    
-    // For demo purposes, just redirect to login
-    // In a real app, you'd register the user first
-    navigate("/login");
+    try {
+      const response = await fetch('/api/auth/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle error response from the server
+        const errorMessage = data.username || data.password || 'Registration failed';
+        throw new Error(Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage);
+      }
+
+      // Registration successful
+      console.log('Registration successful:', data);
+      navigate('/login');
+    } catch (err) {
+      console.error('Registration error:', err);
+      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -51,6 +74,7 @@ export default function RegisterPage() {
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading}
               />
               
               <TextField
@@ -61,6 +85,7 @@ export default function RegisterPage() {
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
               
               <TextField
@@ -73,6 +98,7 @@ export default function RegisterPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 error={!!error && error.includes("Passwords")}
                 helperText={error.includes("Passwords") ? error : ""}
+                disabled={isLoading}
               />
             </Stack>
 
@@ -81,8 +107,9 @@ export default function RegisterPage() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
             >
-              Register
+              {isLoading ? 'Registering...' : 'Register'}
             </Button>
             
             <Box sx={{ textAlign: 'center', mt: 2 }}>
