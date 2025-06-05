@@ -1,23 +1,56 @@
 import { Link, useNavigate } from "react-router";
-import { useState } from "react";
-import { Container, Box, Typography, TextField, Button, Paper, Alert, Stack, Link as MuiLink } from '@mui/material';
+import { useState, useEffect } from "react";
+import { Container, Box, Typography, TextField, Button, Paper, Alert, Stack, Link as MuiLink, CircularProgress } from '@mui/material';
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+  
+  // Redirect to home if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
     
-    // Here you would typically make an API call to authenticate
-    console.log("Login attempt with:", { username, password });
-    
-    // For demo purposes, just redirect to home
-    // In a real app, you'd validate credentials first
-    navigate("/");
+    try {
+      const response = await fetch('/api/auth/token/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.non_field_errors?.[0] || 'Invalid credentials');
+      }
+
+      if (!data.token) {
+        throw new Error('No authentication token received');
+      }
+
+      // Store token and redirect
+      login(data.token);
+      navigate("/");
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,6 +77,7 @@ export default function LoginPage() {
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading}
               />
               
               <TextField
@@ -54,6 +88,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
               />
             </Stack>
 
@@ -62,8 +97,9 @@ export default function LoginPage() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
             >
-              Sign In
+              {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
             </Button>
             
             <Box sx={{ textAlign: 'center', mt: 2 }}>

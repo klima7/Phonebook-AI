@@ -12,6 +12,7 @@ import React from 'react';
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navbar from "./components/Navbar";
+import { AuthProvider } from "./contexts/AuthContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -67,8 +68,10 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Navbar />
-      <Outlet />
+      <AuthProvider>
+        <Navbar />
+        <Outlet />
+      </AuthProvider>
     </ThemeProvider>
   );
 }
