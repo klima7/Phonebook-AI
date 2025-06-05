@@ -18,12 +18,9 @@ export default function Navbar() {
           ☎️ Phonebook
         </Typography>
         <Box>
-          <Button color="inherit" component={Link} to="/">
-            Home
-          </Button>
           {isAuthenticated ? (
             <>
-              <Button color="inherit" disabled>
+              <Button color="inherit">
                 {user?.username}
               </Button>
               <Button color="inherit" onClick={handleLogout}>
@@ -44,4 +41,4 @@ export default function Navbar() {
       </Toolbar>
     </AppBar>
   );
-} 
+}
