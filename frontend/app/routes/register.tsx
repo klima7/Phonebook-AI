@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Container, Box, Typography, TextField, Button, Paper, Alert, Stack, Link as MuiLink } from '@mui/material';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +20,7 @@ export default function RegisterPage() {
     }
 
     // Here you would typically make an API call to register the user
-    console.log("Registration attempt with:", { email, password });
+    console.log("Registration attempt with:", { username, password });
     
     // For demo purposes, just redirect to login
     // In a real app, you'd register the user first
@@ -44,13 +44,13 @@ export default function RegisterPage() {
             
             <Stack spacing={2}>
               <TextField
-                label="Email Address"
-                type="email"
+                label="Username"
+                type="text"
                 fullWidth
                 required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
               
               <TextField

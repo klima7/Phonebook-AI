@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Container, Box, Typography, TextField, Button, Paper, Alert, Stack, Link as MuiLink } from '@mui/material';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ export default function LoginPage() {
     setError("");
     
     // Here you would typically make an API call to authenticate
-    console.log("Login attempt with:", { email, password });
+    console.log("Login attempt with:", { username, password });
     
     // For demo purposes, just redirect to home
     // In a real app, you'd validate credentials first
@@ -37,13 +37,13 @@ export default function LoginPage() {
             
             <Stack spacing={2}>
               <TextField
-                label="Email Address"
-                type="email"
+                label="Username"
+                type="text"
                 fullWidth
                 required
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
               
               <TextField
