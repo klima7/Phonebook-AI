@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'contacts',
     'users',
     'rest_framework',
     'rest_framework.authtoken',
