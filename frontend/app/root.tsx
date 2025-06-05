@@ -6,6 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import React from 'react';
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -20,7 +22,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap",
   },
 ];
 
@@ -43,11 +45,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  // Create a simple theme without dark/light mode
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#1976d2',
+      },
+      secondary: {
+        main: '#9c27b0',
+      },
+    },
+  });
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Navbar />
       <Outlet />
-    </>
+    </ThemeProvider>
   );
 }
 

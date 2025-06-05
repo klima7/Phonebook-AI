@@ -1,24 +1,25 @@
 import { Link } from "react-router";
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 
 export default function Navbar() {
   return (
-    <nav className="bg-blue-600 p-4 text-white">
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, textDecoration: 'none', color: 'white' }}>
           Phonebook
-        </Link>
-        <div className="space-x-4">
-          <Link to="/" className="hover:text-blue-200">
+        </Typography>
+        <Box>
+          <Button color="inherit" component={Link} to="/">
             Home
-          </Link>
-          <Link to="/login" className="hover:text-blue-200">
+          </Button>
+          <Button color="inherit" component={Link} to="/login">
             Login
-          </Link>
-          <Link to="/register" className="hover:text-blue-200">
+          </Button>
+          <Button color="inherit" component={Link} to="/register">
             Register
-          </Link>
-        </div>
-      </div>
-    </nav>
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 } 
