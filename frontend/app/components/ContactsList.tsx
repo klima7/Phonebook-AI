@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Alert, Spinner } from 'react-bootstrap';
+import { Card, Alert, Spinner, Row, Col } from 'react-bootstrap';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Contact } from "../services/contactService";
 import ContactCard from "./ContactCard";
@@ -53,16 +53,19 @@ export default function ContactsList({
           </Card>
         </motion.div>
       ) : (
-        <div className="contacts-list">
+        <div className="contacts-grid">
           <AnimatePresence mode="popLayout">
-            {contacts.map(contact => (
-              <ContactCard
-                key={contact.id}
-                contact={contact}
-                onEdit={onEditContact}
-                onDelete={onDeleteContact}
-              />
-            ))}
+            <Row xs={1} sm={2} md={3} lg={4} className="g-3">
+              {contacts.map(contact => (
+                <Col key={contact.id}>
+                  <ContactCard
+                    contact={contact}
+                    onEdit={onEditContact}
+                    onDelete={onDeleteContact}
+                  />
+                </Col>
+              ))}
+            </Row>
           </AnimatePresence>
         </div>
       )}

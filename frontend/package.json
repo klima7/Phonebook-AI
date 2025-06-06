@@ -21,6 +21,7 @@
     "isbot": "^5.1.27",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
+    "react-bootstrap-icons": "^1.11.6",
     "react-dom": "^19.1.0",
     "react-router": "^7.5.3"
   },
