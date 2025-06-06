@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import type { Route } from "./+types/home";
-import { Container, Card } from 'react-bootstrap';
+import { Container, Card, Row, Col } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../contexts/AuthContext";
 import { useContactService, type Contact } from "../services/contactService";
+import { useMessageService, type Message } from "../services/messageService";
 import ContactsList from "../components/ContactsList";
+import Chat from "../components/Chat";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -17,28 +19,47 @@ export function meta({}: Route.MetaArgs) {
 export default function HomePage() {
   const { user, authInitialized } = useAuth();
   const contactService = useContactService();
+  const messageService = useMessageService();
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [contactsLoading, setContactsLoading] = useState(true);
+  const [messagesLoading, setMessagesLoading] = useState(true);
+  const [contactsError, setContactsError] = useState<string | null>(null);
+  const [messagesError, setMessagesError] = useState<string | null>(null);
 
   const fetchContacts = async () => {
-    setLoading(true);
-    setError(null);
+    setContactsLoading(true);
+    setContactsError(null);
     try {
       const data = await contactService.fetchContacts();
       setContacts(data);
     } catch (err) {
-      setError('Failed to load contacts. Please try again later.');
+      setContactsError('Failed to load contacts. Please try again later.');
       console.error(err);
     } finally {
-      setLoading(false);
+      setContactsLoading(false);
+    }
+  };
+
+  const fetchMessages = async () => {
+    setMessagesLoading(true);
+    setMessagesError(null);
+    try {
+      const data = await messageService.fetchMessages();
+      setMessages(data);
+    } catch (err) {
+      setMessagesError('Failed to load messages. Please try again later.');
+      console.error(err);
+    } finally {
+      setMessagesLoading(false);
     }
   };
 
   useEffect(() => {
-    // Only fetch contacts once auth is initialized
+    // Only fetch data once auth is initialized
     if (authInitialized) {
       fetchContacts();
+      fetchMessages();
     }
   }, [authInitialized]);
 
@@ -79,38 +100,68 @@ export default function HomePage() {
     }
   };
 
+  const handleSendMessage = async (content: string) => {
+    try {
+      const newMessage = await messageService.sendMessage(content);
+      setMessages(prev => [...prev, newMessage]);
+      return Promise.resolve();
+    } catch (err) {
+      console.error('Error sending message:', err);
+      return Promise.reject(err);
+    }
+  };
+
   return (
     <ProtectedRoute>
       <div className="py-5 min-vh-100">
-        <Container className="py-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card className="shadow-sm mb-4">
-              <Card.Body className="p-4">
-                <h1 className="text-center mb-3">Welcome to Phonebook</h1>
-                <p className="text-center text-muted mb-3">
-                  Your AI powered phonebook!
-                </p>
-                {user && (
-                  <h5 className="text-center mb-3">
-                    Hello, {user.username}!
-                  </h5>
-                )}
-              </Card.Body>
-            </Card>
+        <Container fluid className="py-4">
+          <Row>
+            <Col md={7}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Card className="shadow-sm mb-4">
+                  <Card.Body className="p-4">
+                    <h1 className="text-center mb-3">Welcome to Phonebook</h1>
+                    <p className="text-center text-muted mb-3">
+                      Your AI powered phonebook!
+                    </p>
+                    {user && (
+                      <h5 className="text-center mb-3">
+                        Hello, {user.username}!
+                      </h5>
+                    )}
+                  </Card.Body>
+                </Card>
 
-            <ContactsList
-              contacts={contacts}
-              loading={loading}
-              error={error}
-              onAddContact={handleAddContact}
-              onEditContact={handleEditContact}
-              onDeleteContact={handleDeleteContact}
-            />
-          </motion.div>
+                <ContactsList
+                  contacts={contacts}
+                  loading={contactsLoading}
+                  error={contactsError}
+                  onAddContact={handleAddContact}
+                  onEditContact={handleEditContact}
+                  onDeleteContact={handleDeleteContact}
+                />
+              </motion.div>
+            </Col>
+            
+            <Col md={5}>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Chat 
+                  messages={messages}
+                  loading={messagesLoading}
+                  error={messagesError}
+                  onSendMessage={handleSendMessage}
+                />
+              </motion.div>
+            </Col>
+          </Row>
         </Container>
       </div>
     </ProtectedRoute>
