@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import type { Route } from "./+types/home";
-import { Container, Card, Alert, Spinner } from 'react-bootstrap';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Container, Card } from 'react-bootstrap';
+import { motion } from 'framer-motion';
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../contexts/AuthContext";
 import { useContactService, type Contact } from "../services/contactService";
-import ContactCard from "../components/ContactCard";
-import ContactForm from "../components/ContactForm";
+import ContactsList from "../components/ContactsList";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -103,48 +102,14 @@ export default function HomePage() {
               </Card.Body>
             </Card>
 
-            <h2 className="mb-4">Your Contacts</h2>
-            
-            <ContactForm onSubmit={handleAddContact} />
-
-            {error && (
-              <Alert variant="danger" className="mb-4">
-                {error}
-              </Alert>
-            )}
-
-            {loading ? (
-              <div className="text-center py-5">
-                <Spinner animation="border" role="status" variant="primary">
-                  <span className="visually-hidden">Loading...</span>
-                </Spinner>
-              </div>
-            ) : contacts.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="text-center p-5">
-                  <Card.Body>
-                    <p className="mb-0 text-muted">No contacts found. Add your first contact above!</p>
-                  </Card.Body>
-                </Card>
-              </motion.div>
-            ) : (
-              <div className="contacts-list">
-                <AnimatePresence mode="popLayout">
-                  {contacts.map(contact => (
-                    <ContactCard
-                      key={contact.id}
-                      contact={contact}
-                      onEdit={handleEditContact}
-                      onDelete={handleDeleteContact}
-                    />
-                  ))}
-                </AnimatePresence>
-              </div>
-            )}
+            <ContactsList
+              contacts={contacts}
+              loading={loading}
+              error={error}
+              onAddContact={handleAddContact}
+              onEditContact={handleEditContact}
+              onDeleteContact={handleDeleteContact}
+            />
           </motion.div>
         </Container>
       </div>
