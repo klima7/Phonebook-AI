@@ -3,13 +3,13 @@ import { Card, Alert, Spinner, Row, Col } from 'react-bootstrap';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Contact } from "../services/contactService";
 import ContactCard from "./ContactCard";
-import ContactForm from "./ContactForm";
+import AddContactCard from "./AddContactCard";
 
 interface ContactsListProps {
   contacts: Contact[];
   loading: boolean;
   error: string | null;
-  onAddContact: (contact: Contact) => Promise<void>;
+  onAddContact: (contact: Omit<Contact, 'id'>) => Promise<void>;
   onEditContact: (contact: Contact) => Promise<void>;
   onDeleteContact: (id: number) => Promise<void>;
 }
@@ -25,8 +25,6 @@ export default function ContactsList({
   return (
     <>
       <h2 className="mb-4">Your Contacts</h2>
-      
-      <ContactForm onSubmit={onAddContact} />
 
       {error && (
         <Alert variant="danger" className="mb-4">
@@ -41,21 +39,18 @@ export default function ContactsList({
           </Spinner>
         </div>
       ) : contacts.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Card className="text-center p-5">
-            <Card.Body>
-              <p className="mb-0 text-muted">No contacts found. Add your first contact above!</p>
-            </Card.Body>
-          </Card>
-        </motion.div>
+        <Row xs={1} sm={2} md={3} lg={4} className="g-3">
+          <Col>
+            <AddContactCard onAdd={onAddContact} />
+          </Col>
+        </Row>
       ) : (
         <div className="contacts-grid">
           <AnimatePresence mode="popLayout">
             <Row xs={1} sm={2} md={3} lg={4} className="g-3">
+              <Col>
+                <AddContactCard onAdd={onAddContact} />
+              </Col>
               {contacts.map(contact => (
                 <Col key={contact.id}>
                   <ContactCard

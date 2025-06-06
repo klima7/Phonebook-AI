@@ -63,7 +63,7 @@ export default function HomePage() {
     }
   }, [authInitialized]);
 
-  const handleAddContact = async (contact: Contact) => {
+  const handleAddContact = async (contact: Omit<Contact, 'id'>) => {
     try {
       const newContact = await contactService.createContact(contact);
       setContacts(prev => [...prev, newContact]);

@@ -13,3 +13,8 @@ body {
     color-scheme: dark;
   }
 }
+
+.border-dashed {
+  border-style: dashed !important;
+  border-width: 2px !important;
+}
