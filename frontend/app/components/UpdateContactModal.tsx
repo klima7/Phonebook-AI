@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import type { Contact } from '../services/contactService';
 
@@ -15,10 +15,12 @@ export default function UpdateContactModal({ show, onHide, contact, onEdit }: Up
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Reset form fields when modal is opened with a different contact
-  if (show && (name !== contact.name || phone !== contact.phone)) {
-    setName(contact.name);
-    setPhone(contact.phone);
-  }
+  useEffect(() => {
+    if (show) {
+      setName(contact.name);
+      setPhone(contact.phone);
+    }
+  }, [show, contact.name, contact.phone]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
