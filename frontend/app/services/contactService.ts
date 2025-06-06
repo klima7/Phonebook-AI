@@ -1,4 +1,5 @@
 import { useAuth } from '../contexts/AuthContext';
+import { useApi } from '../utils/api';
 
 export interface Contact {
   id?: number;
@@ -9,14 +10,10 @@ export interface Contact {
 }
 
 export const useContactService = () => {
-  const { getAuthHeader } = useAuth();
+  const api = useApi();
 
   const fetchContacts = async (): Promise<Contact[]> => {
-    const response = await fetch('/api/contacts/', {
-      headers: {
-        ...getAuthHeader(),
-      },
-    });
+    const response = await api.get('/api/contacts/');
     
     if (!response.ok) {
       throw new Error('Failed to fetch contacts');
@@ -26,14 +23,7 @@ export const useContactService = () => {
   };
 
   const createContact = async (contact: Contact): Promise<Contact> => {
-    const response = await fetch('/api/contacts/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeader(),
-      },
-      body: JSON.stringify(contact),
-    });
+    const response = await api.post('/api/contacts/', contact);
     
     if (!response.ok) {
       throw new Error('Failed to create contact');
@@ -45,14 +35,7 @@ export const useContactService = () => {
   const updateContact = async (contact: Contact): Promise<Contact> => {
     if (!contact.id) throw new Error('Contact ID is required for update');
     
-    const response = await fetch(`/api/contacts/${contact.id}/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeader(),
-      },
-      body: JSON.stringify(contact),
-    });
+    const response = await api.put(`/api/contacts/${contact.id}/`, contact);
     
     if (!response.ok) {
       throw new Error('Failed to update contact');
@@ -62,12 +45,7 @@ export const useContactService = () => {
   };
 
   const deleteContact = async (id: number): Promise<void> => {
-    const response = await fetch(`/api/contacts/${id}/`, {
-      method: 'DELETE',
-      headers: {
-        ...getAuthHeader(),
-      },
-    });
+    const response = await api.delete(`/api/contacts/${id}/`);
     
     if (!response.ok) {
       throw new Error('Failed to delete contact');

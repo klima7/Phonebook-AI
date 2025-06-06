@@ -1,6 +1,7 @@
 /**
  * Utility for making authenticated API requests
  */
+import { useAuth } from '../contexts/AuthContext';
 
 // Check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
@@ -64,4 +65,61 @@ export const api = {
   delete: (url: string) => fetchWithAuth(url, {
     method: 'DELETE',
   }),
+};
+
+// Create a hook for components to use that ensures auth is initialized
+export const useApi = () => {
+  const { authInitialized, getAuthHeader, isAuthenticated } = useAuth();
+  
+  const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
+    // Wait for auth to be initialized before making requests
+    if (!authInitialized) {
+      console.warn('Attempting API request before auth initialization is complete');
+      await new Promise(resolve => {
+        const checkInit = () => {
+          if (document.querySelector('body')?.getAttribute('data-auth-initialized') === 'true') {
+            resolve(true);
+            return;
+          }
+          setTimeout(checkInit, 50);
+        };
+        checkInit();
+      });
+    }
+    
+    const headers = {
+      'Content-Type': 'application/json',
+      ...getAuthHeader(),
+      ...options.headers,
+    };
+
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
+
+    return response;
+  };
+
+  return {
+    fetchWithAuth,
+    
+    get: (url: string) => fetchWithAuth(url),
+    
+    post: (url: string, data: any) => fetchWithAuth(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+    
+    put: (url: string, data: any) => fetchWithAuth(url, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+    
+    delete: (url: string) => fetchWithAuth(url, {
+      method: 'DELETE',
+    }),
+    
+    isAuthenticated,
+  };
 }; 

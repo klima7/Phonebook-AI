@@ -16,7 +16,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, authInitialized } = useAuth();
   const contactService = useContactService();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,8 +37,11 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    // Only fetch contacts once auth is initialized
+    if (authInitialized) {
+      fetchContacts();
+    }
+  }, [authInitialized]);
 
   const handleAddContact = async (contact: Contact) => {
     try {

@@ -6,6 +6,7 @@ interface AuthContextType {
   user: { username: string } | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  authInitialized: boolean;
   login: (token: string) => void;
   logout: () => void;
   getAuthHeader: () => { Authorization: string } | {};
@@ -37,11 +38,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<{ username: string } | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [authInitialized, setAuthInitialized] = useState(false);
   
   // Initialize token from localStorage only on client-side
   useEffect(() => {
-    setToken(getStorageItem('token'));
+    const storedToken = getStorageItem('token');
+    setToken(storedToken);
     setIsInitialized(true);
+    
+    // If no token, we can immediately mark auth as initialized
+    if (!storedToken) {
+      setAuthInitialized(true);
+      setIsLoading(false);
+    }
   }, []);
   
   const isAuthenticated = !!token;
@@ -53,6 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (!token) {
         setIsLoading(false);
+        setAuthInitialized(true);
         return;
       }
       
@@ -77,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout();
       } finally {
         setIsLoading(false);
+        setAuthInitialized(true);
       }
     };
 
@@ -104,6 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user, 
       isAuthenticated,
       isLoading,
+      authInitialized,
       login, 
       logout,
       getAuthHeader

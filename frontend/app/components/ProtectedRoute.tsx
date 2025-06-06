@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, authInitialized } = useAuth();
   const [isClient, setIsClient] = useState(false);
   
   // This effect will only run on the client after hydration
@@ -17,8 +17,8 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     setIsClient(true);
   }, []);
   
-  // Show loading indicator while authenticating
-  if (isLoading || !isClient) {
+  // Show loading indicator while authenticating or waiting for auth to initialize
+  if (isLoading || !isClient || !authInitialized) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
         <Spinner animation="border" role="status">
