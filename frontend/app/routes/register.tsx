@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
-import { Container, Box, Typography, TextField, Button, Paper, Alert, Stack, Link as MuiLink } from '@mui/material';
+import { Container, Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -51,78 +51,86 @@ export default function RegisterPage() {
   };
 
   return (
-    <Box sx={{ py: 6, minHeight: 'calc(100vh - 64px)' }}>
-      <Container maxWidth="sm">
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom align="center">
-            Create a new account
-          </Typography>
-          
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
-            
-            <Stack spacing={2}>
-              <TextField
-                label="Username"
-                type="text"
-                fullWidth
-                required
-                autoComplete="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isLoading}
-              />
+    <div className="py-5 min-vh-100">
+      <Container className="py-4">
+        <div className="d-flex justify-content-center">
+          <Card className="shadow-sm" style={{ maxWidth: '500px', width: '100%' }}>
+            <Card.Body className="p-4">
+              <h2 className="text-center mb-4">Create a new account</h2>
               
-              <TextField
-                label="Password"
-                type="password"
-                fullWidth
-                required
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
-              
-              <TextField
-                label="Confirm Password"
-                type="password"
-                fullWidth
-                required
-                autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                error={!!error && error.includes("Passwords")}
-                helperText={error.includes("Passwords") ? error : ""}
-                disabled={isLoading}
-              />
-            </Stack>
+              <Form onSubmit={handleSubmit}>
+                {error && (
+                  <Alert variant="danger" className="mb-3">
+                    {error}
+                  </Alert>
+                )}
+                
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    required
+                    autoComplete="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    disabled={isLoading}
+                    className="bg-white border border-secondary"
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3" controlId="password">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
+                    className="bg-white border border-secondary"
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3" controlId="confirmPassword">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    isInvalid={!!error && error.includes("Passwords")}
+                    disabled={isLoading}
+                    className="bg-white border border-secondary"
+                  />
+                  {error.includes("Passwords") && (
+                    <Form.Control.Feedback type="invalid">
+                      {error}
+                    </Form.Control.Feedback>
+                  )}
+                </Form.Group>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Registering...' : 'Register'}
-            </Button>
-            
-            <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Typography variant="body2" color="text.secondary" display="inline">
-                Already have an account?{' '}
-              </Typography>
-              <MuiLink component={Link} to="/login" variant="body2">
-                Sign in
-              </MuiLink>
-            </Box>
-          </Box>
-        </Paper>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="w-100 mt-3"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Spinner animation="border" size="sm" className="me-2" /> : null}
+                  Register
+                </Button>
+                
+                <div className="text-center mt-3">
+                  <small className="text-muted">
+                    Already have an account?{' '}
+                    <Link to="/login">Sign in</Link>
+                  </small>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </div>
       </Container>
-    </Box>
+    </div>
   );
 } 

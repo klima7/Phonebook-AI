@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
-import { Container, Box, Typography, TextField, Button, Paper, Alert, Stack, Link as MuiLink, CircularProgress } from '@mui/material';
+import { Container, Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginPage() {
@@ -54,65 +54,67 @@ export default function LoginPage() {
   };
 
   return (
-    <Box sx={{ py: 6, minHeight: 'calc(100vh - 64px)' }}>
-      <Container maxWidth="sm">
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom align="center">
-            Sign in to your account
-          </Typography>
-          
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                {error}
-              </Alert>
-            )}
-            
-            <Stack spacing={2}>
-              <TextField
-                label="Username"
-                type="text"
-                fullWidth
-                required
-                autoComplete="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isLoading}
-              />
+    <div className="py-5 min-vh-100">
+      <Container className="py-4">
+        <div className="d-flex justify-content-center">
+          <Card className="shadow-sm" style={{ maxWidth: '500px', width: '100%' }}>
+            <Card.Body className="p-4">
+              <h2 className="text-center mb-4">Sign in to your account</h2>
               
-              <TextField
-                label="Password"
-                type="password"
-                fullWidth
-                required
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
-            </Stack>
+              <Form onSubmit={handleSubmit}>
+                {error && (
+                  <Alert variant="danger" className="mb-3">
+                    {error}
+                  </Alert>
+                )}
+                
+                <Form.Group className="mb-3" controlId="username">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    required
+                    autoComplete="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    disabled={isLoading}
+                    className="bg-white border border-secondary"
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3" controlId="password">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    required
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
+                    className="bg-white border border-secondary"
+                  />
+                </Form.Group>
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
-            >
-              {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
-            </Button>
-            
-            <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Typography variant="body2" color="text.secondary" display="inline">
-                Don't have an account?{' '}
-              </Typography>
-              <MuiLink component={Link} to="/register" variant="body2">
-                Register here
-              </MuiLink>
-            </Box>
-          </Box>
-        </Paper>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="w-100 mt-3"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <Spinner animation="border" size="sm" className="me-2" /> : null}
+                  Sign In
+                </Button>
+                
+                <div className="text-center mt-3">
+                  <small className="text-muted">
+                    Don't have an account?{' '}
+                    <Link to="/register">Register here</Link>
+                  </small>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </div>
       </Container>
-    </Box>
+    </div>
   );
 } 

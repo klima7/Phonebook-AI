@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import { Container, Paper, Typography, Box } from '@mui/material';
+import { Container, Card } from 'react-bootstrap';
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -15,23 +15,25 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <Box sx={{ py: 6, minHeight: 'calc(100vh - 64px)' }}>
-        <Container maxWidth="sm">
-          <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom align="center">
-              Welcome to Phonebook
-            </Typography>
-            <Typography variant="body1" align="center" color="text.secondary" gutterBottom>
-              Your AI powered phonebook!
-            </Typography>
-            {user && (
-              <Typography variant="h6" align="center" sx={{ mt: 2 }}>
-                Hello, {user.username}!
-              </Typography>
-            )}
-          </Paper>
+      <div className="py-5 min-vh-100">
+        <Container className="py-4">
+          <div className="d-flex justify-content-center">
+            <Card className="shadow-sm mt-4" style={{ maxWidth: '500px', width: '100%' }}>
+              <Card.Body className="p-4">
+                <h1 className="text-center mb-3">Welcome to Phonebook</h1>
+                <p className="text-center text-muted mb-3">
+                  Your AI powered phonebook!
+                </p>
+                {user && (
+                  <h5 className="text-center mt-4">
+                    Hello, {user.username}!
+                  </h5>
+                )}
+              </Card.Body>
+            </Card>
+          </div>
         </Container>
-      </Box>
+      </div>
     </ProtectedRoute>
   );
 }

@@ -2,7 +2,7 @@ import { Navigate } from "react-router";
 import type { ReactNode } from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
-import { Box, CircularProgress } from '@mui/material';
+import { Spinner } from 'react-bootstrap';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -20,9 +20,11 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   // Show loading indicator while authenticating
   if (isLoading || !isClient) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Box>
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </div>
     );
   }
 

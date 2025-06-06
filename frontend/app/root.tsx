@@ -6,13 +6,15 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import React from 'react';
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navbar from "./components/Navbar";
 import { AuthProvider } from "./contexts/AuthContext";
+
+// Import Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -53,26 +55,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  // Create a simple theme without dark/light mode
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#1976d2',
-      },
-      secondary: {
-        main: '#9c27b0',
-      },
-    },
-  });
-
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <Navbar />
-        <Outlet />
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <Navbar />
+      <Outlet />
+    </AuthProvider>
   );
 }
 
@@ -93,14 +80,16 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
-          <code>{stack}</code>
-        </pre>
-      )}
+    <main className="container mt-5 pt-4">
+      <div className="alert alert-danger">
+        <h1>{message}</h1>
+        <p>{details}</p>
+        {stack && (
+          <pre className="border p-3 bg-light mt-3 overflow-auto">
+            <code>{stack}</code>
+          </pre>
+        )}
+      </div>
     </main>
   );
 }
