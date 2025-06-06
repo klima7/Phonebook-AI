@@ -20,33 +20,30 @@ export default function Navbar() {
   };
 
   return (
-    <BootstrapNavbar bg="primary" variant="dark" expand="lg">
-      <Container>
-        <BootstrapNavbar.Brand as={Link} to="/">☎️ Phonebook</BootstrapNavbar.Brand>
-        <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
-        <BootstrapNavbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-          <Nav>
-            {isAuthenticated ? (
-              <>
-                <Nav.Link as="span" className="text-light">
-                  {user?.username}
-                </Nav.Link>
-                <Nav.Link onClick={handleLogout} className="text-light" style={buttonStyle}>
-                  Logout
-                </Nav.Link>
-              </>
-            ) : (
-              <>
-                <Nav.Link as={Link} to="/login" className="text-light" style={buttonStyle}>
-                  Login
-                </Nav.Link>
-                <Nav.Link as={Link} to="/register" className="text-light" style={buttonStyle}>
-                  Register
-                </Nav.Link>
-              </>
-            )}
-          </Nav>
-        </BootstrapNavbar.Collapse>
+    <BootstrapNavbar bg="primary" variant="dark">
+      <Container className="d-flex flex-row justify-content-between align-items-center">
+        <BootstrapNavbar.Brand as={Link} to="/">📞 Phonebook</BootstrapNavbar.Brand>
+        <Nav className="d-flex flex-row">
+          {isAuthenticated ? (
+            <>
+              <Nav.Link as="span" className="text-light">
+                {user?.username}
+              </Nav.Link>
+              <Nav.Link onClick={handleLogout} className="text-light" style={buttonStyle}>
+                Logout
+              </Nav.Link>
+            </>
+          ) : (
+            <>
+              <Nav.Link as={Link} to="/login" className="text-light" style={buttonStyle}>
+                Login
+              </Nav.Link>
+              <Nav.Link as={Link} to="/register" className="text-light" style={buttonStyle}>
+                Register
+              </Nav.Link>
+            </>
+          )}
+        </Nav>
       </Container>
     </BootstrapNavbar>
   );
