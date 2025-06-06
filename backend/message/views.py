@@ -14,6 +14,8 @@ class MessageList(generics.GenericAPIView):
         return MessageReadSerializer
     
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Message.objects.none()
         return Message.objects.filter(user=self.request.user)
     
     def get(self, request, *args, **kwargs):
