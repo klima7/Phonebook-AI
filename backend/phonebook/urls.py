@@ -42,4 +42,5 @@ urlpatterns = [
     
     # My apps
     path('auth/', include('users.urls')),
+    path('contacts/', include('contacts.urls')),
 ]
