@@ -122,20 +122,6 @@ export default function HomePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Card className="shadow-sm mb-4">
-                  <Card.Body className="p-4">
-                    <h1 className="text-center mb-3">Welcome to Phonebook</h1>
-                    <p className="text-center text-muted mb-3">
-                      Your AI powered phonebook!
-                    </p>
-                    {user && (
-                      <h5 className="text-center mb-3">
-                        Hello, {user.username}!
-                      </h5>
-                    )}
-                  </Card.Body>
-                </Card>
-
                 <ContactsList
                   contacts={contacts}
                   loading={contactsLoading}
