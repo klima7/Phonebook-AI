@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { motion } from 'framer-motion';
+import { PlusLg, ChatDots } from 'react-bootstrap-icons';
 import type { Conversation } from '../services/conversationService';
 
 interface ConversationTabsProps {
@@ -28,6 +29,22 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
         </div>
       ) : (
         <div className="d-flex overflow-auto py-2" style={{ scrollbarWidth: 'thin' }}>
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="me-2"
+          >
+            <Button
+              variant="outline-primary"
+              className="d-flex align-items-center justify-content-center"
+              style={{ width: '42px', height: '42px' }}
+              onClick={onNewConversation}
+              aria-label="Start new conversation"
+            >
+              <PlusLg size={16} />
+            </Button>
+          </motion.div>
+          
           {conversations.map((conversation) => (
             <OverlayTrigger
               key={conversation.id}
@@ -45,29 +62,16 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
               >
                 <Button
                   variant={activeConversationId === conversation.id ? "primary" : "outline-secondary"}
-                  className="rounded-circle p-2"
+                  className="d-flex align-items-center justify-content-center"
+                  style={{ width: '42px', height: '42px' }}
                   onClick={() => onSelectConversation(conversation.id!)}
                   aria-label={`Conversation from ${new Date(conversation.created_at || '').toLocaleDateString()}`}
                 >
-                  <i className="bi bi-chat-dots"></i>
+                  <ChatDots size={16} />
                 </Button>
               </motion.div>
             </OverlayTrigger>
           ))}
-          
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Button
-              variant="success"
-              className="rounded-circle p-2"
-              onClick={onNewConversation}
-              aria-label="Start new conversation"
-            >
-              <i className="bi bi-plus" style={{ fontSize: "1.2rem" }}></i>
-            </Button>
-          </motion.div>
         </div>
       )}
     </div>

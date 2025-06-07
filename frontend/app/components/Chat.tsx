@@ -79,7 +79,10 @@ export default function Chat({ onConversationChange }: ChatProps) {
   };
 
   const handleSelectConversation = (id: number | null) => {
-    if (id !== activeConversationId) {
+    if (id === null) {
+      // Create new conversation when null is selected
+      handleNewConversation();
+    } else if (id !== activeConversationId) {
       setActiveConversationId(id);
       if (onConversationChange) {
         onConversationChange(id);
@@ -99,7 +102,7 @@ export default function Chat({ onConversationChange }: ChatProps) {
         loading={conversationsLoading}
       />
       
-      <div className="d-flex flex-column" style={{ height: 'calc(100vh - 200px)' }}>
+      <div className="d-flex flex-column" style={{ height: 'calc(100vh - 220px)' }}>
         {error && (
           <Alert variant="danger" className="m-3">
             {error}
