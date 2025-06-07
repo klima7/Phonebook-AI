@@ -48,7 +48,7 @@ export default function Chat({ messages, loading, error, onSendMessage }: ChatPr
 
   return (
     <>
-      <h2 className="mb-4">AI Assistant</h2>
+      <h2 className="mb-4">Your Assistant</h2>
       <div className="d-flex flex-column" style={{ height: 'calc(100vh - 220px)' }}>
         {error && (
           <Alert variant="danger" className="m-3">
