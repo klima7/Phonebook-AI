@@ -114,7 +114,7 @@ export default function HomePage() {
   return (
     <ProtectedRoute>
       <div>
-        <Container fluid className="py-4">
+        <Container fluid className="pt-4 px-4">
           <Row>
             <Col md={7}>
               <motion.div

@@ -24,12 +24,12 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
     if (textarea) {
       textarea.style.height = '40px';
       const scrollHeight = textarea.scrollHeight;
-      textarea.style.height = `${Math.min(scrollHeight, 100)}px`;
+      textarea.style.height = `${Math.min(scrollHeight+5, 100)}px`;
     }
   }, [message]);
 
   return (
-    <div className="p-3 border-top">
+    <div className="pb-0 pt-1 border-top">
       <Form onSubmit={onSubmit}>
         <InputGroup>
           <Form.Control
