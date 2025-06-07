@@ -26,5 +26,6 @@ class MessageList(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user, type=MessageType.USER)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        message = serializer.save(user=request.user, type=MessageType.USER)
+        read_serializer = MessageReadSerializer(message)
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
