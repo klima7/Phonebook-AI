@@ -25,7 +25,10 @@ export const useConversationService = () => {
       throw new Error('Failed to fetch conversations');
     }
     
-    return response.json();
+    const conversations = await response.json();
+    return conversations.sort((a: Conversation, b: Conversation) => 
+      new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+    );
   };
 
   const createConversation = async (): Promise<Conversation> => {
