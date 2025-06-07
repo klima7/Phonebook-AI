@@ -27,10 +27,10 @@ class MessageViewSet(viewsets.ModelViewSet):
         if getattr(self, 'swagger_fake_view', False):
             return Message.objects.none()
             
-        conversation_id = self.kwargs['conversation_id']
+        conversation_id = int(self.kwargs['conversation_id'])
         return Message.objects.filter(
             conversation_id=conversation_id,
         )
     
     def perform_create(self, serializer):
-        serializer.save(type=MessageType.USER, conversation_id=self.kwargs['conversation_id'])
+        serializer.save(type=MessageType.USER, conversation_id=int(self.kwargs['conversation_id']))
