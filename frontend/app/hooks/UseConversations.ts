@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import type { Conversation } from '../services/conversationService';
 import { useConversationService } from '../services/conversationService';
 
+// Helper function to sort conversations by created_at date (newest first)
+const sortConversationsByDate = (conversations: Conversation[]) => {
+  return [...conversations].sort((a, b) => 
+    new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+  );
+};
+
 export const useConversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,13 +36,17 @@ export const useConversations = () => {
     const unsubscribe = conversationService.subscribeToConversationUpdates(
       // Handle conversation created
       (newConversation) => {
-        setConversations((prevConversations) => [...prevConversations, newConversation]);
+        setConversations((prevConversations) => 
+          sortConversationsByDate([...prevConversations, newConversation])
+        );
       },
       // Handle conversation updated
       (updatedConversation) => {
-        setConversations((prevConversations) =>
-          prevConversations.map((conversation) =>
-            conversation.id === updatedConversation.id ? updatedConversation : conversation
+        setConversations((prevConversations) => 
+          sortConversationsByDate(
+            prevConversations.map((conversation) =>
+              conversation.id === updatedConversation.id ? updatedConversation : conversation
+            )
           )
         );
       },
