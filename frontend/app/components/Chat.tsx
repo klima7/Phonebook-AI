@@ -14,6 +14,7 @@ export default function Chat({ onConversationChange }: ChatProps) {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const { conversations, loading: conversationsLoading, error: conversationsError, createNewConversation } = useConversations();
   const { messages, loading, error, addMessage } = useMessages(activeConversationId || undefined);
@@ -29,17 +30,33 @@ export default function Chat({ onConversationChange }: ChatProps) {
   }, [messages]);
 
   useEffect(() => {
-    // Set the first conversation as active when conversations are loaded
+    // If there are conversations loaded and no active conversation,
+    // set the first one as active
     if (conversations.length > 0 && activeConversationId === null) {
       setActiveConversationId(conversations[0].id!);
       if (onConversationChange) {
         onConversationChange(conversations[0].id!);
       }
-    } else if (conversations.length === 0 && !conversationsLoading) {
-      // Create a default conversation if none exists
-      handleNewConversation();
     }
   }, [conversations, conversationsLoading]);
+
+  // Effect to send pending message after conversation ID is set
+  useEffect(() => {
+    const sendPendingMessage = async () => {
+      if (pendingMessage && activeConversationId !== null) {
+        try {
+          await addMessage(pendingMessage);
+          setPendingMessage(null);
+        } catch (error) {
+          console.error('Error sending pending message:', error);
+        }
+      }
+    };
+
+    if (pendingMessage && activeConversationId !== null) {
+      sendPendingMessage();
+    }
+  }, [pendingMessage, activeConversationId, addMessage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +64,17 @@ export default function Chat({ onConversationChange }: ChatProps) {
     
     setIsSending(true);
     try {
-      await addMessage(message);
+      // If no active conversation, create a new one first
+      if (activeConversationId === null) {
+        const newConversation = await createNewConversation();
+        setPendingMessage(message);
+        setActiveConversationId(newConversation.id!);
+        if (onConversationChange) {
+          onConversationChange(newConversation.id!);
+        }
+      } else {
+        await addMessage(message);
+      }
       setMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -76,14 +103,9 @@ export default function Chat({ onConversationChange }: ChatProps) {
   };
 
   const handleSelectConversation = (id: number | null) => {
-    if (id === null) {
-      // Create new conversation when null is selected
-      handleNewConversation();
-    } else if (id !== activeConversationId) {
-      setActiveConversationId(id);
-      if (onConversationChange) {
-        onConversationChange(id);
-      }
+    setActiveConversationId(id);
+    if (onConversationChange) {
+      onConversationChange(id);
     }
   };
 

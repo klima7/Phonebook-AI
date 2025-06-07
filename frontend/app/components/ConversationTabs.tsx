@@ -35,10 +35,10 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
             className="me-2"
           >
             <Button
-              variant="outline-primary"
+              variant={activeConversationId === null ? "primary" : "outline-primary"}
               className="d-flex align-items-center justify-content-center"
               style={{ width: '42px', height: '42px' }}
-              onClick={onNewConversation}
+              onClick={() => onSelectConversation(null)}
               aria-label="Start new conversation"
             >
               <PlusLg size={16} />
