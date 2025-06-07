@@ -43,5 +43,5 @@ urlpatterns = [
     # My apps
     path('auth/', include('users.urls')),
     path('contacts/', include('contacts.urls')),
-    path('chat/', include('message.urls')),
+    path('conversations/', include('message.urls')),
 ]
