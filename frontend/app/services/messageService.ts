@@ -4,6 +4,7 @@ export interface Message {
   id?: number;
   type: 'user' | 'assistant' | 'tool';
   content: string;
+  conversation_id?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -11,8 +12,12 @@ export interface Message {
 export const useMessageService = () => {
   const api = useApi();
 
-  const fetchMessages = async (): Promise<Message[]> => {
-    const response = await api.get('/api/messages/');
+  const fetchMessages = async (conversationId?: number): Promise<Message[]> => {
+    const url = conversationId 
+      ? `/api/conversations/${conversationId}/messages/` 
+      : '/api/messages/';
+    
+    const response = await api.get(url);
     
     if (!response.ok) {
       throw new Error('Failed to fetch messages');
@@ -21,8 +26,13 @@ export const useMessageService = () => {
     return response.json();
   };
 
-  const sendMessage = async (content: string): Promise<Message> => {
-    const response = await api.post('/api/messages/', { content });
+  const sendMessage = async (content: string, conversationId?: number): Promise<Message> => {
+    const payload = { content };
+    const url = conversationId 
+      ? `/api/conversations/${conversationId}/messages/` 
+      : '/api/messages/';
+      
+    const response = await api.post(url, payload);
     
     if (!response.ok) {
       throw new Error('Failed to send message');

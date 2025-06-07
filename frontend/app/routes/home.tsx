@@ -26,6 +26,7 @@ export default function HomePage() {
   const [messagesLoading, setMessagesLoading] = useState(true);
   const [contactsError, setContactsError] = useState<string | null>(null);
   const [messagesError, setMessagesError] = useState<string | null>(null);
+  const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
 
   const fetchContacts = async () => {
     setContactsLoading(true);
@@ -41,12 +42,15 @@ export default function HomePage() {
     }
   };
 
-  const fetchMessages = async () => {
+  const fetchMessages = async (conversationId?: number) => {
     setMessagesLoading(true);
     setMessagesError(null);
     try {
-      const data = await messageService.fetchMessages();
+      const data = await messageService.fetchMessages(conversationId);
       setMessages(data);
+      if (conversationId) {
+        setActiveConversationId(conversationId);
+      }
     } catch (err) {
       setMessagesError('Failed to load messages. Please try again later.');
       console.error(err);
@@ -100,14 +104,21 @@ export default function HomePage() {
     }
   };
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = async (content: string, conversationId?: number) => {
     try {
-      const newMessage = await messageService.sendMessage(content);
+      const newMessage = await messageService.sendMessage(content, conversationId);
       setMessages(prev => [...prev, newMessage]);
       return Promise.resolve();
     } catch (err) {
       console.error('Error sending message:', err);
       return Promise.reject(err);
+    }
+  };
+
+  const handleConversationChange = (conversationId: number | null) => {
+    if (conversationId && conversationId !== activeConversationId) {
+      setActiveConversationId(conversationId);
+      fetchMessages(conversationId);
     }
   };
 
@@ -145,6 +156,7 @@ export default function HomePage() {
                   loading={messagesLoading}
                   error={messagesError}
                   onSendMessage={handleSendMessage}
+                  onConversationChange={handleConversationChange}
                 />
               </motion.div>
             </Col>
