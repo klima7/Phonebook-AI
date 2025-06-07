@@ -2,7 +2,7 @@ import asyncio
 import websockets
 
 async def connect_and_listen():
-    uri = "ws://localhost:80/api/ws/messages/"
+    uri = "ws://localhost:80/api/ws/contacts/"
     subprotocols = ["token.af7c08f387023d97bc9ee83783ae1a8b2786b482"]
     
     async with websockets.connect(uri, subprotocols=subprotocols) as websocket:
