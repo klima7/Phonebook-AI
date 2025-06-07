@@ -4,24 +4,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { Contact } from "../services/contactService";
 import ContactCard from "./ContactCard";
 import AddContactCard from "./AddContactCard";
+import { useContacts } from '../hooks/UseContacts';
 
-interface ContactsListProps {
-  contacts: Contact[];
-  loading: boolean;
-  error: string | null;
-  onAddContact: (contact: Omit<Contact, 'id'>) => Promise<void>;
-  onEditContact: (contact: Contact) => Promise<void>;
-  onDeleteContact: (id: number) => Promise<void>;
-}
-
-export default function ContactsList({
-  contacts,
-  loading,
-  error,
-  onAddContact,
-  onEditContact,
-  onDeleteContact
-}: ContactsListProps) {
+export default function ContactsList() {
+  const { contacts, loading, error, addContact, updateContact, deleteContact } = useContacts();
+  
   return (
     <>
       <h2 className="mb-4">Your Contacts</h2>
@@ -41,7 +28,7 @@ export default function ContactsList({
       ) : contacts.length === 0 ? (
         <Row xs={1} sm={2} md={3} lg={4} className="g-3">
           <Col>
-            <AddContactCard onAdd={onAddContact} />
+            <AddContactCard onAdd={addContact} />
           </Col>
         </Row>
       ) : (
@@ -52,13 +39,13 @@ export default function ContactsList({
                 <Col key={contact.id}>
                   <ContactCard
                     contact={contact}
-                    onEdit={onEditContact}
-                    onDelete={onDeleteContact}
+                    onEdit={updateContact}
+                    onDelete={deleteContact}
                   />
                 </Col>
               ))}
               <Col>
-                <AddContactCard onAdd={onAddContact} />
+                <AddContactCard onAdd={addContact} />
               </Col>
             </Row>
           </AnimatePresence>

@@ -1,5 +1,6 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useApi } from '../utils/api';
+import { useWebSocket } from '../utils/websocket';
 
 export interface Contact {
   id?: number;
@@ -9,8 +10,15 @@ export interface Contact {
   updated_at?: string;
 }
 
+export interface ContactWebSocketMessage {
+  type: 'create' | 'update' | 'delete';
+  id: number;
+  value?: Contact;
+}
+
 export const useContactService = () => {
   const api = useApi();
+  const getWebSocketManager = useWebSocket();
 
   const fetchContacts = async (): Promise<Contact[]> => {
     const response = await api.get('/api/contacts/');
@@ -52,10 +60,50 @@ export const useContactService = () => {
     }
   };
 
+  const subscribeToContactUpdates = (
+    onContactCreated?: (contact: Contact) => void,
+    onContactUpdated?: (contact: Contact) => void,
+    onContactDeleted?: (id: number) => void
+  ) => {
+    const wsManager = getWebSocketManager('/api/ws/contacts/');
+    
+    wsManager.connect().then(() => {
+      console.log('Connected to contacts WebSocket');
+    }).catch(error => {
+      console.error('Failed to connect to contacts WebSocket:', error);
+    });
+    
+    const unsubscribe = wsManager.setMessageHandler((data: ContactWebSocketMessage) => {
+      switch (data.type) {
+        case 'create':
+          if (data.value && onContactCreated) {
+            onContactCreated(data.value);
+          }
+          break;
+        case 'update':
+          if (data.value && onContactUpdated) {
+            onContactUpdated(data.value);
+          }
+          break;
+        case 'delete':
+          if (onContactDeleted) {
+            onContactDeleted(data.id);
+          }
+          break;
+      }
+    });
+    
+    return () => {
+      unsubscribe();
+      wsManager.disconnect();
+    };
+  };
+
   return {
     fetchContacts,
     createContact,
     updateContact,
     deleteContact,
+    subscribeToContactUpdates,
   };
 }; 
