@@ -10,7 +10,7 @@ class MessageType(models.TextChoices):
     
 class Conversation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    in_progress = models.BooleanField(default=True)
+    in_progress = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

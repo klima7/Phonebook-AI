@@ -1,31 +1,43 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions, status
+from rest_framework import viewsets, permissions, status, mixins
 from rest_framework.response import Response
-from .models import Message, MessageType
-from .serializers import MessageReadSerializer, MessageWriteSerializer
+from django.shortcuts import get_object_or_404
+from .models import Message, MessageType, Conversation
+from .serializers import MessageReadSerializer, MessageWriteSerializer, ConversationSerializer
 
 
-class MessageList(generics.GenericAPIView):
+class ConversationViewSet(viewsets.ModelViewSet):
+    serializer_class = ConversationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Conversation.objects.none()
+        return Conversation.objects.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_serializer_class(self):
-        if self.request.method == 'POST':
+        if self.action == 'create' or self.action == 'update' or self.action == 'partial_update':
             return MessageWriteSerializer
         return MessageReadSerializer
     
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):
             return Message.objects.none()
-        return Message.objects.filter(user=self.request.user)
+            
+        conversation_id = self.request.query_params.get('conversation_id')
+        if conversation_id:
+            return Message.objects.filter(
+                conversation_id=conversation_id,
+                conversation__user=self.request.user
+            )
+        return Message.objects.filter(conversation__user=self.request.user)
     
-    def get(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-    
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        message = serializer.save(user=request.user, type=MessageType.USER)
-        read_serializer = MessageReadSerializer(message)
-        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
+    def perform_create(self, serializer):
+        serializer.save(type=MessageType.USER)
