@@ -51,7 +51,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="py-5 min-vh-100">
+    <div className="py-5">
       <Container className="py-4">
         <div className="d-flex justify-content-center">
           <Card className="shadow-sm" style={{ maxWidth: '500px', width: '100%' }}>

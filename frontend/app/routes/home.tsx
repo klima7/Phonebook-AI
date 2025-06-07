@@ -113,7 +113,7 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-vh-100">
+      <div>
         <Container fluid className="py-4">
           <Row>
             <Col md={7}>
