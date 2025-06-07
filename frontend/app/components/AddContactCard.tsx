@@ -31,8 +31,8 @@ export default function AddContactCard({ onAdd }: AddContactCardProps) {
           onClick={() => setShowModal(true)}
         >
           <Card.Body className="d-flex align-items-center justify-content-center">
-            <Plus size={24} className="text-primary me-2" />
-            <span className="text-primary">Add Contact</span>
+            <Plus size={70} className="text-primary me-2" />
+            <span className="text-primary fs-5">Add Contact</span>
           </Card.Body>
         </Card>
       </motion.div>
