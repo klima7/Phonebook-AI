@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Button, InputGroup } from 'react-bootstrap';
+import { Send, SendFill } from 'react-bootstrap-icons';
 
 interface ChatSendFieldProps {
   message: string;
@@ -25,24 +26,31 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={onKeyDown}
-            placeholder="Type your message..."
+            placeholder="Anything you want..."
             disabled={isSending}
-            style={{ resize: 'none', height: '50px' }}
+            style={{ 
+              resize: 'none', 
+              height: '50px',
+              borderRadius: '25px 0 0 25px', 
+              paddingLeft: '20px' 
+            }}
+            className="bg-white border border-primary"
           />
           <Button 
             type="submit" 
             variant="primary"
             disabled={isSending || !message.trim()}
+            style={{ 
+              borderRadius: '0 25px 25px 0',
+              width: '50px'
+            }}
           >
             {isSending ? 
               <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> :
-              'Send'
+              <SendFill />
             }
           </Button>
         </InputGroup>
-        <Form.Text className="text-muted">
-          Press Enter to send, Shift+Enter for a new line
-        </Form.Text>
       </Form>
     </div>
   );

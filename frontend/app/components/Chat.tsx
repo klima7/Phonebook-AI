@@ -47,41 +47,37 @@ export default function Chat({ messages, loading, error, onSendMessage }: ChatPr
   };
 
   return (
-    <Card className="shadow-sm mb-4">
-      <Card.Header>
-        <h4 className="mb-0">AI Assistant</h4>
-      </Card.Header>
-      <Card.Body className="p-0">
-        <div className="d-flex flex-column" style={{ height: 'calc(100vh - 220px)' }}>
-          {error && (
-            <Alert variant="danger" className="m-3">
-              {error}
-            </Alert>
-          )}
+    <>
+      <h2 className="mb-4">AI Assistant</h2>
+      <div className="d-flex flex-column" style={{ height: 'calc(100vh - 220px)' }}>
+        {error && (
+          <Alert variant="danger" className="m-3">
+            {error}
+          </Alert>
+        )}
 
-          {loading ? (
-            <div className="d-flex justify-content-center align-items-center flex-grow-1">
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
-            </div>
-          ) : (
-            <>
-              <ChatMessagesList 
-                messages={messages} 
-                messagesEndRef={messagesEndRef}
-              />
-              <ChatSendField
-                message={message}
-                setMessage={setMessage}
-                isSending={isSending}
-                onSubmit={handleSubmit}
-                onKeyDown={handleKeyDown}
-              />
-            </>
-          )}
-        </div>
-      </Card.Body>
-    </Card>
+        {loading ? (
+          <div className="d-flex justify-content-center align-items-center flex-grow-1">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </div>
+        ) : (
+          <>
+            <ChatMessagesList 
+              messages={messages} 
+              messagesEndRef={messagesEndRef}
+            />
+            <ChatSendField
+              message={message}
+              setMessage={setMessage}
+              isSending={isSending}
+              onSubmit={handleSubmit}
+              onKeyDown={handleKeyDown}
+            />
+          </>
+        )}
+      </div>
+    </>
   );
 } 
