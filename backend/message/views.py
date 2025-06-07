@@ -3,7 +3,7 @@ from rest_framework import viewsets, permissions, status, mixins
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Message, MessageType, Conversation
-from .serializers import MessageReadSerializer, MessageWriteSerializer, ConversationSerializer
+from .serializers import MessageSerializer, ConversationSerializer
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -20,12 +20,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
 
 class MessageViewSet(viewsets.ModelViewSet):
+    serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
-    def get_serializer_class(self):
-        if self.action == 'create' or self.action == 'update' or self.action == 'partial_update':
-            return MessageWriteSerializer
-        return MessageReadSerializer
     
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view', False):

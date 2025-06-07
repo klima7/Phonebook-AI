@@ -4,7 +4,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 from .models import Message
-from .serializers import MessageReadSerializer
+from .serializers import MessageSerializer
 
 
 @receiver(post_save, sender=Message)
@@ -17,7 +17,7 @@ def message_created_or_updated(sender, instance, created, **kwargs):
             type="message.change",
             operation_type="create" if created else "update",
             id=instance.id,
-            value=MessageReadSerializer(instance).data
+            value=MessageSerializer(instance).data
         )
     )
 
