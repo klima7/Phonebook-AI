@@ -18,7 +18,7 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, me
     >
       {messages.length === 0 ? (
         <div className="text-center text-muted my-5">
-          <p>No messages yet. Start the conversation with your AI assistant!</p>
+          <p>No messages yet.</p>
         </div>
       ) : (
         <>

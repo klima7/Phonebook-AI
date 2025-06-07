@@ -47,7 +47,7 @@ export default function ContactsList({
       ) : (
         <div className="contacts-grid">
           <AnimatePresence mode="popLayout">
-            <Row xs={1} sm={2} md={3} lg={4} className="g-3">
+            <Row xs={1} sm={1} md={1} lg={2} xl={2} xxl={3} className="g-3">
               {contacts.map(contact => (
                 <Col key={contact.id}>
                   <ContactCard
