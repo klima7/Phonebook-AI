@@ -38,7 +38,7 @@ def conversation_deleted(sender, instance, **kwargs):
 def message_created_or_updated(sender, instance, created, **kwargs):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        f"messages_{instance.conversation.user.id}",
+        f"messages_{instance.conversation.id}",
         dict(
             type="message.change",
             operation_type="create" if created else "update",
@@ -52,7 +52,7 @@ def message_created_or_updated(sender, instance, created, **kwargs):
 def message_deleted(sender, instance, **kwargs):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        f"messages_{instance.conversation.user.id}",
+        f"messages_{instance.conversation.id}",
         dict(
             type="message.change",
             operation_type="delete",

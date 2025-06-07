@@ -30,12 +30,14 @@ class ConversationConsumer(WebsocketConsumer):
 class MessageConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
+        conversation_id = self.scope["url_route"]["kwargs"]["conversation_id"]
         self.accept()
-        async_to_sync(self.channel_layer.group_add)(f"messages_{user.id}", self.channel_name)
+        async_to_sync(self.channel_layer.group_add)(f"messages_{conversation_id}", self.channel_name)
 
     def disconnect(self, close_code):
         user = self.scope["user"]
-        async_to_sync(self.channel_layer.group_discard)(f"messages_{user.id}", self.channel_name)
+        conversation_id = self.scope["url_route"]["kwargs"]["conversation_id"]
+        async_to_sync(self.channel_layer.group_discard)(f"messages_{conversation_id}", self.channel_name)
         
     def receive(self, text_data):
         pass
