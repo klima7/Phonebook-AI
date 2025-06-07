@@ -40,6 +40,47 @@ services:
       postgres:
         condition: service_healthy
 
+  worker:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: poetry run -- watchmedo auto-restart --directory=/app --pattern=*.py --recursive --signal=SIGKILL -- poetry run celery -A phonebook worker
+    restart: always
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    healthcheck:
+      test: poetry run celery -A phonebook inspect ping
+      interval: 5s
+      retries: 6
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+
+  flower:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: poetry run -- watchmedo auto-restart --directory=/app --pattern=*.py --recursive --signal=SIGKILL -- poetry run celery -A phonebook flower --url_prefix=/tasks
+    restart: always
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    healthcheck:
+      test: poetry run celery -A phonebook inspect ping
+      interval: 5s
+      retries: 6
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   frontend:
     build:
       context: frontend
