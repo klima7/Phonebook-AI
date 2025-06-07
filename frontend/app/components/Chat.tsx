@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, Alert, Spinner } from 'react-bootstrap';
-import type { Message } from '../services/messageService';
-import type { Conversation } from '../services/conversationService';
-import { useConversationService } from '../services/conversationService';
 import { ChatMessagesList } from './ChatMessagesList';
 import { ChatSendField } from './ChatSendField';
 import { ConversationTabs } from './ConversationTabs';

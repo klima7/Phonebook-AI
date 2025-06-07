@@ -28,7 +28,7 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
           </div>
         </div>
       ) : (
-        <div className="d-flex overflow-auto py-2" style={{ scrollbarWidth: 'thin' }}>
+        <div className="d-flex overflow-auto p-2" style={{ scrollbarWidth: 'thin' }}>
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
