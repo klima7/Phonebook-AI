@@ -26,50 +26,72 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
           </div>
         </div>
       ) : (
-        <div className="d-flex overflow-auto p-2" style={{ scrollbarWidth: 'thin' }}>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="me-2"
+        <div className="position-relative">
+          <div 
+            className="d-flex overflow-auto p-2" 
+            style={{ 
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              overflowX: 'auto',
+              overflowY: 'hidden'
+            }}
           >
-            <Button
-              variant={activeConversationId === null ? "primary" : "outline-primary"}
-              className="d-flex align-items-center justify-content-center"
-              style={{ width: '42px', height: '42px' }}
-              onClick={() => onSelectConversation(null)}
-              aria-label="Start new conversation"
+            <div 
+              style={{ 
+                position: 'absolute', 
+                top: 0, 
+                right: 0, 
+                width: '60px', 
+                height: '100%', 
+                background: 'linear-gradient(to right, transparent, white)',
+                pointerEvents: 'none',
+                zIndex: 1
+              }}
+            />
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="me-2"
             >
-              <PlusLg size={16} />
-            </Button>
-          </motion.div>
-          
-          {conversations.map((conversation) => (
-            <OverlayTrigger
-              key={conversation.id}
-              placement="bottom"
-              overlay={
-                <Tooltip id={`conversation-${conversation.id}`}>
-                  {new Date(conversation.created_at || '').toLocaleDateString()}
-                </Tooltip>
-              }
-            >
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="me-2"
+              <Button
+                variant={activeConversationId === null ? "primary" : "outline-primary"}
+                className="d-flex align-items-center justify-content-center"
+                style={{ width: '42px', height: '42px' }}
+                onClick={() => onSelectConversation(null)}
+                aria-label="Start new conversation"
               >
-                <Button
-                  variant={activeConversationId === conversation.id ? "primary" : "outline-secondary"}
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ width: '42px', height: '42px' }}
-                  onClick={() => onSelectConversation(conversation.id!)}
-                  aria-label={`Conversation from ${new Date(conversation.created_at || '').toLocaleDateString()}`}
+                <PlusLg size={16} />
+              </Button>
+            </motion.div>
+            
+            {conversations.map((conversation) => (
+              <OverlayTrigger
+                key={conversation.id}
+                placement="bottom"
+                overlay={
+                  <Tooltip id={`conversation-${conversation.id}`}>
+                    {new Date(conversation.created_at || '').toLocaleDateString()}
+                  </Tooltip>
+                }
+              >
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="me-2"
                 >
-                  <ChatDots size={16} />
-                </Button>
-              </motion.div>
-            </OverlayTrigger>
-          ))}
+                  <Button
+                    variant={activeConversationId === conversation.id ? "primary" : "outline-secondary"}
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: '42px', height: '42px' }}
+                    onClick={() => onSelectConversation(conversation.id!)}
+                    aria-label={`Conversation from ${new Date(conversation.created_at || '').toLocaleDateString()}`}
+                  >
+                    <ChatDots size={16} />
+                  </Button>
+                </motion.div>
+              </OverlayTrigger>
+            ))}
+          </div>
         </div>
       )}
     </div>
