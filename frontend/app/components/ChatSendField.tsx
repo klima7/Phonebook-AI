@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Form, Button, InputGroup } from 'react-bootstrap';
 import { Send, SendFill } from 'react-bootstrap-icons';
 
@@ -17,12 +17,24 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
   onSubmit, 
   onKeyDown 
 }) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = '40px';
+      const scrollHeight = textarea.scrollHeight;
+      textarea.style.height = `${Math.min(scrollHeight, 100)}px`;
+    }
+  }, [message]);
+
   return (
     <div className="p-3 border-top">
       <Form onSubmit={onSubmit}>
         <InputGroup>
           <Form.Control
             as="textarea"
+            ref={textareaRef}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={onKeyDown}
@@ -30,9 +42,11 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
             disabled={isSending}
             style={{ 
               resize: 'none', 
-              height: '50px',
+              minHeight: '40px',
+              maxHeight: '100px',
               borderRadius: '25px 0 0 25px', 
-              paddingLeft: '20px' 
+              paddingLeft: '20px',
+              boxShadow: 'none'
             }}
             className="bg-white border border-primary"
           />
