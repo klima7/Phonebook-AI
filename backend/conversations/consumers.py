@@ -16,6 +16,14 @@ class ConversationConsumer(WebsocketConsumer):
 
     def receive(self, text_data):
         pass
+    
+    def conversation_change(self, event):
+        type = event['operation_type']
+        id = event['id']
+        value = event['value'] if 'value' in event else None
+        data = {'type': type, 'id': id, 'value': value}
+        self.send(text_data=json.dumps(data))
+
 
 
 
