@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import type { Message } from '../services/messageService';
 import { useMessageService } from '../services/messageService';
+import { useConversationService } from '../services/conversationService';
 
 export const useMessages = (conversationId?: number) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const messageService = useMessageService();
+  const conversationService = useConversationService();
 
   useEffect(() => {
     // If conversationId is undefined, set empty messages and return early
@@ -62,14 +64,16 @@ export const useMessages = (conversationId?: number) => {
   }, [conversationId]);
 
   const addMessage = async (content: string) => {
-    if (conversationId === undefined) {
-      setError('Cannot send message without a conversation ID');
-      throw new Error('Cannot send message without a conversation ID');
-    }
-    
     try {
-      const newMessage = await messageService.sendMessage(content, conversationId);
-      // We don't need to update the state here as the WebSocket will handle it
+      let targetConversationId = conversationId;
+      
+      // If no conversation ID exists, create a new conversation first
+      if (targetConversationId === undefined) {
+        const newConversation = await conversationService.createConversation();
+        targetConversationId = newConversation.id;
+      }
+      
+      const newMessage = await messageService.sendMessage(content, targetConversationId);
       return newMessage;
     } catch (err) {
       setError('Failed to send message');

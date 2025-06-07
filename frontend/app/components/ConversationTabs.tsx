@@ -8,7 +8,6 @@ interface ConversationTabsProps {
   conversations: Conversation[];
   activeConversationId: number | null;
   onSelectConversation: (id: number | null) => void;
-  onNewConversation: () => void;
   loading: boolean;
 }
 
@@ -16,7 +15,6 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
   conversations,
   activeConversationId,
   onSelectConversation,
-  onNewConversation,
   loading
 }) => {
   return (

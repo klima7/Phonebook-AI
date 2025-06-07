@@ -14,7 +14,6 @@ export default function Chat({ onConversationChange }: ChatProps) {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
-  const [pendingMessage, setPendingMessage] = useState<string | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const { conversations, loading: conversationsLoading, error: conversationsError, createNewConversation } = useConversations();
   const { messages, loading, error, addMessage } = useMessages(activeConversationId || undefined);
@@ -40,42 +39,20 @@ export default function Chat({ onConversationChange }: ChatProps) {
     }
   }, [conversations, conversationsLoading]);
 
-  // Effect to send pending message after conversation ID is set
-  useEffect(() => {
-    const sendPendingMessage = async () => {
-      if (pendingMessage && activeConversationId !== null) {
-        try {
-          await addMessage(pendingMessage);
-          setPendingMessage(null);
-        } catch (error) {
-          console.error('Error sending pending message:', error);
-        }
-      }
-    };
-
-    if (pendingMessage && activeConversationId !== null) {
-      sendPendingMessage();
-    }
-  }, [pendingMessage, activeConversationId, addMessage]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
     
     setIsSending(true);
+    const currentMessage = message;
+    setMessage('');
+    
     try {
-      // If no active conversation, create a new one first
-      if (activeConversationId === null) {
-        const newConversation = await createNewConversation();
-        setPendingMessage(message);
-        setActiveConversationId(newConversation.id!);
-        if (onConversationChange) {
-          onConversationChange(newConversation.id!);
-        }
-      } else {
-        await addMessage(message);
+      const new_message = await addMessage(currentMessage);
+      setActiveConversationId(new_message.conversation_id!);
+      if (onConversationChange) {
+        onConversationChange(new_message.conversation_id!);
       }
-      setMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -87,18 +64,6 @@ export default function Chat({ onConversationChange }: ChatProps) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
-    }
-  };
-
-  const handleNewConversation = async () => {
-    try {
-      const newConversation = await createNewConversation();
-      setActiveConversationId(newConversation.id!);
-      if (onConversationChange) {
-        onConversationChange(newConversation.id!);
-      }
-    } catch (error) {
-      console.error('Error creating conversation:', error);
     }
   };
 
@@ -117,7 +82,6 @@ export default function Chat({ onConversationChange }: ChatProps) {
         conversations={conversations}
         activeConversationId={activeConversationId}
         onSelectConversation={handleSelectConversation}
-        onNewConversation={handleNewConversation}
         loading={conversationsLoading}
       />
       
