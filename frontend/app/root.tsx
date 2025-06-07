@@ -45,7 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="phonebook-app">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -72,7 +72,9 @@ export default function App() {
     <AuthProvider>
       <AuthInitializer />
       <Navbar />
-      <Outlet />
+      <main className="content-container">
+        <Outlet />
+      </main>
     </AuthProvider>
   );
 }

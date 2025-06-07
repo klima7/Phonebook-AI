@@ -4,12 +4,13 @@ import { ChatMessage } from './ChatMessage';
 
 interface ChatMessagesListProps {
   messages: Message[];
-  messagesEndRef: React.MutableRefObject<HTMLDivElement | null>;
+  containerRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
-export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, messagesEndRef }) => {
+export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, containerRef }) => {
   return (
     <div 
+      ref={containerRef}
       className="flex-grow-1 p-3 overflow-auto"
       style={{ 
         display: 'flex',
@@ -27,7 +28,6 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, me
           ))}
         </>
       )}
-      <div ref={messagesEndRef} />
     </div>
   );
 }; 

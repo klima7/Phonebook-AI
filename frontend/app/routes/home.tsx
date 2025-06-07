@@ -113,7 +113,7 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="py-5 min-vh-100">
+      <div className="min-vh-100">
         <Container fluid className="py-4">
           <Row>
             <Col md={7}>
@@ -121,7 +121,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="mb-4"
+                className="mb-5"
               >
                 <ContactsList
                   contacts={contacts}

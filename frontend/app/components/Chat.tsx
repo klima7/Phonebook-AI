@@ -14,10 +14,12 @@ interface ChatProps {
 export default function Chat({ messages, loading, error, onSendMessage }: ChatProps) {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -63,10 +65,10 @@ export default function Chat({ messages, loading, error, onSendMessage }: ChatPr
             </Spinner>
           </div>
         ) : (
-          <>
+          <div className="d-flex flex-column flex-grow-1 overflow-hidden">
             <ChatMessagesList 
               messages={messages} 
-              messagesEndRef={messagesEndRef}
+              containerRef={messagesContainerRef}
             />
             <ChatSendField
               message={message}
@@ -75,7 +77,7 @@ export default function Chat({ messages, loading, error, onSendMessage }: ChatPr
               onSubmit={handleSubmit}
               onKeyDown={handleKeyDown}
             />
-          </>
+          </div>
         )}
       </div>
     </>

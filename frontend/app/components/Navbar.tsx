@@ -20,7 +20,7 @@ export default function Navbar() {
   };
 
   return (
-    <BootstrapNavbar bg="primary" variant="dark" fixed="top">
+    <BootstrapNavbar bg="primary" variant="dark">
       <Container className="d-flex flex-row justify-content-between align-items-center">
         <BootstrapNavbar.Brand as={Link} to="/">Phonebook</BootstrapNavbar.Brand>
         <Nav className="d-flex flex-row">
