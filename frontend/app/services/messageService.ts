@@ -50,14 +50,12 @@ export const useMessageService = () => {
   };
 
   const subscribeToMessageUpdates = (
-    conversationId?: number,
+    conversationId: number,
     onMessageCreated?: (message: Message) => void,
     onMessageUpdated?: (message: Message) => void,
     onMessageDeleted?: (id: number) => void
   ) => {
-    const wsPath = conversationId 
-      ? `/api/ws/conversations/${conversationId}/messages/`
-      : '/api/ws/messages/';
+    const wsPath = `/api/ws/conversations/${conversationId}/messages/`
     
     const wsManager = getWebSocketManager(wsPath);
     

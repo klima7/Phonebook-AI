@@ -9,6 +9,13 @@ export const useMessages = (conversationId?: number) => {
   const messageService = useMessageService();
 
   useEffect(() => {
+    // If conversationId is undefined, set empty messages and return early
+    if (conversationId === undefined) {
+      setMessages([]);
+      setLoading(false);
+      return;
+    }
+
     const fetchInitialMessages = async () => {
       try {
         setLoading(true);
@@ -55,6 +62,11 @@ export const useMessages = (conversationId?: number) => {
   }, [conversationId]);
 
   const addMessage = async (content: string) => {
+    if (conversationId === undefined) {
+      setError('Cannot send message without a conversation ID');
+      throw new Error('Cannot send message without a conversation ID');
+    }
+    
     try {
       const newMessage = await messageService.sendMessage(content, conversationId);
       // We don't need to update the state here as the WebSocket will handle it
