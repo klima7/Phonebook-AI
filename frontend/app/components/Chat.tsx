@@ -6,24 +6,20 @@ import { useConversationService } from '../services/conversationService';
 import { ChatMessagesList } from './ChatMessagesList';
 import { ChatSendField } from './ChatSendField';
 import { ConversationTabs } from './ConversationTabs';
+import { useMessages } from '../hooks/UseMessages';
+import { useConversations } from '../hooks/UseConversations';
 
 interface ChatProps {
-  messages: Message[];
-  loading: boolean;
-  error: string | null;
-  onSendMessage: (content: string, conversationId?: number) => Promise<void>;
   onConversationChange?: (conversationId: number | null) => void;
 }
 
-export default function Chat({ messages, loading, error, onSendMessage, onConversationChange }: ChatProps) {
+export default function Chat({ onConversationChange }: ChatProps) {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [conversationsLoading, setConversationsLoading] = useState(true);
-  const [conversationsError, setConversationsError] = useState<string | null>(null);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
-  const conversationService = useConversationService();
+  const { conversations, loading: conversationsLoading, error: conversationsError, createNewConversation } = useConversations();
+  const { messages, loading, error, addMessage } = useMessages(activeConversationId || undefined);
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -36,37 +32,17 @@ export default function Chat({ messages, loading, error, onSendMessage, onConver
   }, [messages]);
 
   useEffect(() => {
-    const fetchConversations = async () => {
-      setConversationsLoading(true);
-      setConversationsError(null);
-      try {
-        const data = await conversationService.fetchConversations();
-        setConversations(data);
-        if (data.length > 0) {
-          setActiveConversationId(data[0].id!);
-          if (onConversationChange) {
-            onConversationChange(data[0].id!);
-          }
-        } else {
-          // Create a default conversation if none exists
-          const newConversation = await conversationService.createConversation();
-          setConversations([newConversation]);
-          setActiveConversationId(newConversation.id!);
-          if (onConversationChange) {
-            onConversationChange(newConversation.id!);
-          }
-        }
-      } catch (err) {
-        setConversationsError('Failed to load conversations');
-        console.error(err);
-      } finally {
-        setConversationsLoading(false);
+    // Set the first conversation as active when conversations are loaded
+    if (conversations.length > 0 && activeConversationId === null) {
+      setActiveConversationId(conversations[0].id!);
+      if (onConversationChange) {
+        onConversationChange(conversations[0].id!);
       }
-    };
-
-    fetchConversations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    } else if (conversations.length === 0 && !conversationsLoading) {
+      // Create a default conversation if none exists
+      handleNewConversation();
+    }
+  }, [conversations, conversationsLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +50,7 @@ export default function Chat({ messages, loading, error, onSendMessage, onConver
     
     setIsSending(true);
     try {
-      await onSendMessage(message, activeConversationId || undefined);
+      await addMessage(message);
       setMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
@@ -92,8 +68,7 @@ export default function Chat({ messages, loading, error, onSendMessage, onConver
 
   const handleNewConversation = async () => {
     try {
-      const newConversation = await conversationService.createConversation();
-      setConversations(prev => [...prev, newConversation]);
+      const newConversation = await createNewConversation();
       setActiveConversationId(newConversation.id!);
       if (onConversationChange) {
         onConversationChange(newConversation.id!);
