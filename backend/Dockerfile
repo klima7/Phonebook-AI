@@ -24,4 +24,7 @@ RUN poetry install --no-cache --no-root
 # copy everything
 COPY . .
 
+# to show all output in logs
+ENV PYTHONUNBUFFERED=1
+
 CMD poetry run bash start.sh

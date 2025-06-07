@@ -2,6 +2,15 @@ name: phonebook
 
 services:
 
+  redis:
+    image: redis:latest
+    restart: always
+    healthcheck:
+      test: redis-cli ping
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
   postgres:
     image: postgres:17
     restart: always

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 import dj_database_url
@@ -30,12 +31,16 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
+REDIS_URL = os.getenv("REDIS_URL")
+
+
 # Application definition
 
 INSTALLED_APPS = [
     'message',
     'contacts',
     'users',
+    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
@@ -149,4 +154,13 @@ SWAGGER_SETTINGS = {
             'in': 'header'
       }
    }
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [REDIS_URL],
+        },
+    },
 }
