@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { Card, Alert, Spinner, Row, Col } from 'react-bootstrap';
-import { AnimatePresence, motion } from 'framer-motion';
-import type { Contact } from "../services/contactService";
+import { Alert, Spinner, Row, Col } from 'react-bootstrap';
+import { AnimatePresence } from 'framer-motion';
 import ContactCard from "./ContactCard";
 import AddContactCard from "./AddContactCard";
 import { useContacts } from '../hooks/UseContacts';
