@@ -32,10 +32,10 @@ ALLOWED_HOSTS = ['*']
 
 
 REDIS_URL = os.getenv("REDIS_URL")
-
+DJANGO_DATABASE_URL = os.getenv("DJANGO_DATABASE_URL")
+LANGGRAPH_DATABASE_URL = os.getenv("LANGGRAPH_DATABASE_URL")
 
 # Application definition
-
 INSTALLED_APPS = [
     'agent',
     'conversations',
@@ -87,7 +87,8 @@ WSGI_APPLICATION = 'phonebook.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
+    'default': dj_database_url.parse(
+        DJANGO_DATABASE_URL,
         conn_max_age=60,
         conn_health_checks=True,
     )

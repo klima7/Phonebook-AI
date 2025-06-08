@@ -11,7 +11,7 @@ services:
       timeout: 3s
       retries: 3
 
-  postgres:
+  django-database:
     image: postgres:17
     restart: always
     shm_size: 1000gb
@@ -20,12 +20,26 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: postgres
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/django_database:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready -U user -d postgres -h 127.0.0.1
       interval: 5s
       retries: 3
 
+  langgraph-database:
+    image: postgres:17
+    restart: always
+    shm_size: 1000gb
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    volumes:
+      - ./data/langgraph_database:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U user -d postgres -h 127.0.0.1
+      interval: 5s
+      retries: 3
 
   backend:
     build:
@@ -37,7 +51,9 @@ services:
     env_file:
       - .env
     depends_on:
-      postgres:
+      django-database:
+        condition: service_healthy
+      langgraph-database:
         condition: service_healthy
 
   worker:
@@ -55,7 +71,9 @@ services:
       interval: 5s
       retries: 6
     depends_on:
-      postgres:
+      django-database:
+        condition: service_healthy
+      langgraph-database:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -76,7 +94,7 @@ services:
       interval: 5s
       retries: 6
     depends_on:
-      postgres:
+      django-database:
         condition: service_healthy
       redis:
         condition: service_healthy
