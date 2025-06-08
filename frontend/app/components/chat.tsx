@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Alert, Spinner } from 'react-bootstrap';
+import { useState } from 'react';
+import { Alert } from 'react-bootstrap';
 import { ChatMessagesList } from './chatMessagesList';
 import { ChatSendField } from './chatSendField';
 import { ConversationTabs } from './conversationTabs';
@@ -11,7 +11,7 @@ interface ChatProps {}
 export default function Chat({}: ChatProps) {
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const { conversations } = useConversations();
-  const { messages, loading, error, addMessage } = useMessages(activeConversationId);
+  const { messages, error, addMessage } = useMessages(activeConversationId);
 
   const handleSend = async (message: string) => {
     const new_message = await addMessage(message);
@@ -35,22 +35,14 @@ export default function Chat({}: ChatProps) {
           </Alert>
         )}
 
-        {loading ? (
-          <div className="d-flex justify-content-center align-items-center flex-grow-1">
-            <Spinner animation="border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          </div>
-        ) : (
-          <div className="d-flex flex-column flex-grow-1 overflow-hidden">
-            <ChatMessagesList 
-              messages={messages} 
-            />
-            <ChatSendField
-              onSend={handleSend}
-            />
-          </div>
-        )}
+        <div className="d-flex flex-column flex-grow-1 overflow-hidden">
+          <ChatMessagesList 
+            messages={messages} 
+          />
+          <ChatSendField
+            onSend={handleSend}
+          />
+        </div>
       </div>
     </>
   );
