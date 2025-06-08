@@ -18,12 +18,12 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
 }) => {
   return (
     <motion.div 
-      className="mb-3 position-relative"
+      className="position-relative"
       layout
     >
       <div className="position-relative">
         <motion.div 
-          className="d-flex overflow-auto p-2" 
+          className="d-flex overflow-auto px-2 pt-2 pb-1" 
           layout
           style={{ 
             scrollbarWidth: 'none',

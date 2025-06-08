@@ -45,6 +45,7 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages }) 
       style={{ 
         display: 'flex',
         flexDirection: 'column',
+        maskImage: 'linear-gradient(to bottom, transparent 0%, black 40px, black 100%)',
       }}
     >
       {messages.length === 0 ? (
