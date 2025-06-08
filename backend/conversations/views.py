@@ -1,7 +1,6 @@
-from django.shortcuts import render
-from rest_framework import viewsets, permissions, status, mixins
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, permissions
+from rest_framework.exceptions import ValidationError
+
 from .models import Message, MessageType, Conversation
 from .serializers import MessageSerializer, ConversationSerializer
 
@@ -33,4 +32,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         )
     
     def perform_create(self, serializer):
-        serializer.save(type=MessageType.USER, conversation_id=int(self.kwargs['conversation_id']))
+        conversation = Conversation.objects.get(id=int(self.kwargs['conversation_id']))
+        if conversation.in_progress:
+            raise ValidationError("Unable to add message to a conversation that is in progress")
+        serializer.save(type=MessageType.USER, conversation=conversation)
