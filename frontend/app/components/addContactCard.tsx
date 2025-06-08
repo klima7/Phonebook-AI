@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { motion } from 'framer-motion';
-import type { Contact } from '../services/contactService';
+import type { Contact } from '~/models';
 import { Plus } from 'react-bootstrap-icons';
 import AddContactModal from './addContactModal';
 

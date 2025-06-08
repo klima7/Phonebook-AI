@@ -1,7 +1,7 @@
 import type { Conversation } from '~/models';
 import { useApi } from '../utils/api';
 
-export const useConversationService = () => {
+export const useConversationApi = () => {
   const api = useApi();
 
   const fetchConversations = async (): Promise<Conversation[]> => {

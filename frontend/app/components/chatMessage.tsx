@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import type { Message } from '../services/messageService';
+import type { Message } from '~/models';
 
 interface ChatMessageProps {
   message: Message;

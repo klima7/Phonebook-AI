@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Conversation } from '~/models';
-import { useConversationService } from '../services/conversationService';
+import { useConversationApi } from '~/api/conversationApi';
 import { useAuthedWebSocket } from '~/utils/websocket';
 
 // Helper function to sort conversations by created_at date (newest first)
@@ -20,14 +20,14 @@ export const useConversations = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const conversationService = useConversationService();
+  const conversationApi = useConversationApi();
   const { lastJsonMessage } = useAuthedWebSocket('/api/ws/conversations/');
 
   useEffect(() => {
     const fetchInitialConversations = async () => {
       try {
         setLoading(true);
-        const fetchedConversations = await conversationService.fetchConversations();
+        const fetchedConversations = await conversationApi.fetchConversations();
         setConversations(fetchedConversations);
         setError(null);
       } catch (err) {
@@ -75,7 +75,7 @@ export const useConversations = () => {
 
   const createNewConversation = async () => {
     try {
-      const newConversation = await conversationService.createConversation();
+      const newConversation = await conversationApi.createConversation();
       // We don't need to update the state here as the WebSocket will handle it
       return newConversation;
     } catch (err) {

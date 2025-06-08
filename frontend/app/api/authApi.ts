@@ -1,7 +1,7 @@
 import type { LoginCredentials, RegisterCredentials } from "~/models";
 
 
-export const useAuthService = () => {
+export const useAuthApi = () => {
 
   const getAuthToken = async (credentials: LoginCredentials): Promise<string> => {
     const response = await fetch('/api/auth/token/', {

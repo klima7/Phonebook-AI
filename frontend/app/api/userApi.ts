@@ -1,7 +1,7 @@
 import type { User } from '~/models';
 import { useApi } from '../utils/api';
 
-export const useUserService = () => {
+export const useUserApi = () => {
   const api = useApi();
 
   const getCurrentUser = async (): Promise<User> => {

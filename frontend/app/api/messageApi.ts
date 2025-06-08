@@ -1,7 +1,7 @@
 import type { Message } from '~/models';
 import { useApi } from '../utils/api';
 
-export const useMessageService = () => {
+export const useMessageApi = () => {
   const api = useApi();
 
   const fetchMessages = async (conversationId?: number): Promise<Message[]> => {

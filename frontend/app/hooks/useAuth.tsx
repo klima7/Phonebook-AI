@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { useAuthService } from '../services/authService';
+import { useAuthApi } from '~/api/authApi';
 import type { LoginCredentials, RegisterCredentials } from '~/models';
 
 interface AuthContextType {
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [authInitialized, setAuthInitialized] = useState(false);
-  const authService = useAuthService();
+  const authApi = useAuthApi();
   
   // Initialize token from localStorage only on client-side
   useEffect(() => {
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (credentials: LoginCredentials) => {
     try {
-      const newToken = await authService.getAuthToken(credentials);
+      const newToken = await authApi.getAuthToken(credentials);
       setStorageItem('token', newToken);
       setToken(newToken);
     } catch (error) {
@@ -111,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (credentials: RegisterCredentials) => {
     try {
-      await authService.register(credentials);
+      await authApi.register(credentials);
     } catch (error) {
       console.error('Registration failed:', error);
       throw error;

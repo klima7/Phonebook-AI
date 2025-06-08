@@ -1,7 +1,7 @@
 import type { Contact } from '~/models';
 import { useApi } from '../utils/api';
 
-export const useContactService = () => {
+export const useContactApi = () => {
   const api = useApi();
 
   const fetchContacts = async (): Promise<Contact[]> => {

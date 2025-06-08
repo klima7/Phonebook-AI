@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
-import type { Contact } from '../services/contactService';
+import type { Contact } from '~/models';
 import PhoneInputField from './phoneInputField';
 
 interface UpdateContactModalProps {

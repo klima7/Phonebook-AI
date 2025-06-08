@@ -3,7 +3,7 @@ import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlusLg, ChatDots } from 'react-bootstrap-icons';
 import { formatDistanceToNow } from 'date-fns';
-import type { Conversation } from '../services/conversationService';
+import type { Conversation } from '~/models';
 
 interface ConversationTabsProps {
   conversations: Conversation[];

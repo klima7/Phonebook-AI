@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
-import { useAuthService } from "../services/authService";
+import { useAuthApi } from '~/api/authApi';
 
 interface RegisterPanelProps {}
 
@@ -12,7 +12,7 @@ export default function RegisterPanel({}: RegisterPanelProps) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const authService = useAuthService();
+  const authApi = useAuthApi();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ export default function RegisterPanel({}: RegisterPanelProps) {
     }
 
     try {
-      await authService.register({ username, password });
+      await authApi.register({ username, password });
       // Registration successful
       console.log('Registration successful');
       navigate('/login');
