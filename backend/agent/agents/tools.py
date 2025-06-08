@@ -16,7 +16,7 @@ def create_contact(name: str, phone: str) -> dict:
     Returns:
         dict: Dictionary containing the created contact's information (id, name, phone)
     """
-    _add_tool_message(f"Creating contact: {name} with phone: {phone}")
+    _add_tool_message(f"Creating contact \"{name}\" with phone \"{phone}\"")
     contact = Contact.objects.create(
         user=get_current_user(),
         name=name,
@@ -24,7 +24,7 @@ def create_contact(name: str, phone: str) -> dict:
     )
     return _to_json(contact)
 
-def delete_contact(contact_id: int) -> str:
+def delete_contact(contact_id: int) -> dict:
     """
     Delete an existing contact from the database.
     
@@ -32,12 +32,12 @@ def delete_contact(contact_id: int) -> str:
         contact_id: The ID of the contact to delete
         
     Returns:
-        str: Message indicating the contact was deleted successfully
+        dict: Dictionary containing the deleted contact's information (id, name, phone)
     """
     contact = Contact.objects.get(id=contact_id)
-    _add_tool_message(f"Deleting contact: {contact.name} with phone: {contact.phone}")
+    _add_tool_message(f"Deleting \"{contact.name}\"")
     contact.delete()
-    return "Contact deleted successfully"
+    return _to_json(contact)
 
 
 def update_contact(contact_id: int, name: str | None = None, phone: str | None = None) -> dict:
@@ -54,12 +54,7 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
     """
     contact = Contact.objects.get(id=contact_id)
     
-    if name and phone:
-        _add_tool_message(f"Updating contact: {contact.name} with name: {name} and phone: {phone}")
-    elif name:
-        _add_tool_message(f"Updating contact: {contact.name} with new name: {name}")
-    elif phone:
-        _add_tool_message(f"Updating contact: {contact.name} with new phone: {phone}")
+    _add_tool_message(f"Updating contact \"{contact.name}\"")
     
     if name:
         contact.name = name
@@ -80,7 +75,7 @@ def search_contacts(name: str, limit: int = 10) -> list[dict]:
     Returns:
         list[dict]: List of dictionaries containing the matching contacts with their id, name and phone number
     """
-    _add_tool_message(f"Searching for: {name}")
+    _add_tool_message(f"Searching for \"{name}\"")
     contacts = get_current_user().contacts.filter(name__icontains=name)[:limit]
     return _to_json(contacts)
 
