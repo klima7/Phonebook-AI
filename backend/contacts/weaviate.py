@@ -111,7 +111,7 @@ def _augment_name(name: str) -> str:
     llm = ChatOpenAI(model="gpt-4o-mini")
     
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are a tags extractor for phone contact names. You will be given a contact name and you have to directly output in one line, separated by commas, all tags which you can deduce. For example: female, young, family, sibling, etc. Output comma separated tags directly, without any preamble or postamble."),
+        ("system", "You are a tags extractor for phone contact names. You will be given a contact name and you have to directly output in one line, separated by commas, all tags which you can deduce. For example: female, young, family, sibling, etc. Generate only tags, which you are sure about. Output comma separated tags directly, without any preamble or postamble."),
         ("user", "This is the contact name: {name}. Now directly generate the comma separated tags. Go!")
     ])
     
