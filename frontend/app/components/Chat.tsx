@@ -6,11 +6,9 @@ import { ConversationTabs } from './ConversationTabs';
 import { useMessages } from '../hooks/UseMessages';
 import { useConversations } from '../hooks/UseConversations';
 
-interface ChatProps {
-  onConversationChange?: (conversationId: number | null) => void;
-}
+interface ChatProps {}
 
-export default function Chat({ onConversationChange }: ChatProps) {
+export default function Chat({}: ChatProps) {
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const { conversations, loading: conversationsLoading, error: conversationsError, createNewConversation } = useConversations();
@@ -27,29 +25,18 @@ export default function Chat({ onConversationChange }: ChatProps) {
   }, [messages]);
 
   useEffect(() => {
-    // If there are conversations loaded and no active conversation,
-    // set the first one as active
     if (conversations.length > 0 && activeConversationId === null) {
       setActiveConversationId(conversations[0].id!);
-      if (onConversationChange) {
-        onConversationChange(conversations[0].id!);
-      }
     }
   }, [conversations, conversationsLoading]);
 
   const handleSend = async (message: string) => {
     const new_message = await addMessage(message);
     setActiveConversationId(new_message.conversation_id!);
-    if (onConversationChange) {
-      onConversationChange(new_message.conversation_id!);
-    }
   };
 
   const handleSelectConversation = (id: number | null) => {
     setActiveConversationId(id);
-    if (onConversationChange) {
-      onConversationChange(id);
-    }
   };
 
   return (
@@ -90,4 +77,4 @@ export default function Chat({ onConversationChange }: ChatProps) {
       </div>
     </>
   );
-} 
+}

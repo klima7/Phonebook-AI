@@ -104,24 +104,6 @@ export default function HomePage() {
     }
   };
 
-  const handleSendMessage = async (content: string, conversationId?: number) => {
-    try {
-      const newMessage = await messageService.sendMessage(content, conversationId);
-      setMessages(prev => [...prev, newMessage]);
-      return Promise.resolve();
-    } catch (err) {
-      console.error('Error sending message:', err);
-      return Promise.reject(err);
-    }
-  };
-
-  const handleConversationChange = (conversationId: number | null) => {
-    if (conversationId && conversationId !== activeConversationId) {
-      setActiveConversationId(conversationId);
-      fetchMessages(conversationId);
-    }
-  };
-
   return (
     <ProtectedRoute>
       <div>
@@ -151,13 +133,7 @@ export default function HomePage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <Chat 
-                  messages={messages}
-                  loading={messagesLoading}
-                  error={messagesError}
-                  onSendMessage={handleSendMessage}
-                  onConversationChange={handleConversationChange}
-                />
+                <Chat/>
               </motion.div>
             </Col>
           </Row>
