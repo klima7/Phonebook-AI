@@ -60,7 +60,7 @@ const ContactsGrid = ({ contacts, onAdd, onEdit, onDelete }: ContactsGridProps) 
   };
   
   return (
-    <div>
+    <div className="mb-4">
       <AnimatePresence mode="popLayout">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} xxl={3} className="g-3">
           {displayedContacts.map(contact => {

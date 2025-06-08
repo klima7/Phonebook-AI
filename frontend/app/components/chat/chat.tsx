@@ -19,7 +19,7 @@ export default function Chat({}: ChatProps) {
   };
 
   return (
-    <>
+    <div className="mb-1">
       <h2 className="mb-3">Your Assistant</h2>
       
       <ConversationTabs
@@ -44,6 +44,6 @@ export default function Chat({}: ChatProps) {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
