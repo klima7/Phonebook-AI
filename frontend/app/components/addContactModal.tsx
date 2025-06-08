@@ -6,7 +6,7 @@ import PhoneInputField from './phoneInputField';
 interface AddContactModalProps {
   show: boolean;
   onHide: () => void;
-  onAdd: (contact: Omit<Contact, 'id'>) => Promise<void>;
+  onAdd: (contact: Omit<Contact, 'id'>) => Promise<Contact>;
 }
 
 export default function AddContactModal({ show, onHide, onAdd }: AddContactModalProps) {

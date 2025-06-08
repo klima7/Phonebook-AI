@@ -7,7 +7,7 @@ interface UpdateContactModalProps {
   show: boolean;
   onHide: () => void;
   contact: Contact;
-  onEdit: (contact: Contact) => Promise<void>;
+  onEdit: (contact: Contact) => Promise<Contact>;
 }
 
 export default function UpdateContactModal({ show, onHide, contact, onEdit }: UpdateContactModalProps) {

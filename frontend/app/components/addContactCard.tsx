@@ -6,7 +6,7 @@ import { Plus } from 'react-bootstrap-icons';
 import AddContactModal from './addContactModal';
 
 interface AddContactCardProps {
-  onAdd: (contact: Omit<Contact, 'id'>) => Promise<void>;
+  onAdd: (contact: Omit<Contact, 'id'>) => Promise<Contact>;
 }
 
 export default function AddContactCard({ onAdd }: AddContactCardProps) {

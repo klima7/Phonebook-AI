@@ -53,7 +53,7 @@ export const useContacts = () => {
     };
   }, []);
 
-  const addContact = async (contact: Contact) => {
+  const addContact = async (contact: Omit<Contact, 'id'>) => {
     try {
       const newContact = await contactService.createContact(contact);
       // We don't need to update the state here as the WebSocket will handle it

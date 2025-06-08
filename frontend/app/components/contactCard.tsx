@@ -7,7 +7,7 @@ import UpdateContactModal from './updateContactModal';
 
 interface ContactCardProps {
   contact: Contact;
-  onEdit: (contact: Contact) => Promise<void>;
+  onEdit: (contact: Contact) => Promise<Contact>;
   onDelete: (id: number) => Promise<void>;
 }
 
