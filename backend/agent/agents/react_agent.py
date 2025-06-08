@@ -52,6 +52,7 @@ def react_agent(conversation: Conversation):
                 "messages": [{"role": "user", "content": user_prompt}]
             },
             {
+                "run_name": "react-agent",
                 "configurable": {
                     "thread_id": conversation.id,
                 }

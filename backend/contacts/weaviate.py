@@ -116,7 +116,7 @@ def _augment_name(name: str) -> str:
     ])
     
     chain = prompt | llm | StrOutputParser()
-    completion = chain.invoke({"name": name})
+    completion = chain.invoke({"name": name}, {"run_name": "augment-name"})
     return name + ", " + completion
 
 
