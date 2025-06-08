@@ -27,7 +27,7 @@ export default function AddContactCard({ onAdd }: AddContactCardProps) {
       >
         <Card 
           className="h-100 shadow-sm text-center border-primary border-dashed" 
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', border: '2px dashed' }}
           onClick={() => setShowModal(true)}
         >
           <Card.Body className="d-flex align-items-center justify-content-center">

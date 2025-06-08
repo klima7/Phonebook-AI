@@ -9,7 +9,6 @@ import {
 import React from 'react';
 
 import type { Route } from "./+types/root";
-import "./app.css";
 import Navbar from "./components/navbar";
 import { AuthProvider } from "./hooks/useAuth";
 
