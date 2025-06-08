@@ -9,15 +9,55 @@ interface ContactCardProps {
   contact: Contact;
   onEdit: (contact: Contact) => Promise<Contact>;
   onDelete: (id: number) => Promise<void>;
+  isExternallyDeleting?: boolean;
 }
 
-export default function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
+export default function ContactCard({ contact, onEdit, onDelete, isExternallyDeleting = false }: ContactCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cardState, setCardState] = useState('default');
+  const contactRef = useRef(contact);
+  const isBeingDeletedExternally = useRef(false);
+  
+  // Track if contact has been removed from the parent's list
+  useEffect(() => {
+    // If we still have the contact reference but the id has changed, 
+    // it likely means this component is being reused for a different contact
+    if (contactRef.current.id !== contact.id) {
+      contactRef.current = contact;
+      isBeingDeletedExternally.current = false;
+      return;
+    }
+    
+    // Update our ref to the latest contact data
+    contactRef.current = contact;
+  }, [contact]);
+  
+  // Detect if the component is about to be unmounted (possibly due to deletion)
+  useEffect(() => {
+    return () => {
+      // Only trigger the deletion animation if we're not already handling a manual deletion
+      // and we haven't detected this as being deleted externally before
+      if (!isDeleting && !isBeingDeletedExternally.current) {
+        isBeingDeletedExternally.current = true;
+        // We can't actually delay unmounting here, but we can inform parent components
+        // about what's happening through an event or callback if needed
+      }
+    };
+  }, [isDeleting]);
+  
+  // Handle external deletion animation
+  useEffect(() => {
+    if (isExternallyDeleting && !isDeleting) {
+      setCardState('deleting');
+    }
+  }, [isExternallyDeleting, isDeleting]);
   
   // Animation for recently created or updated contact
   useEffect(() => {
+    // Don't override deleting state with other animations
+    if (cardState === 'deleting') return;
+    
     const currentTime = new Date().getTime();
     let newState: 'created' | 'updated' | 'default' = 'default';
 
@@ -39,18 +79,26 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
     if (newState !== 'default') {
       setCardState(newState);
       const timeout = setTimeout(() => {
-        setCardState('default');
+        // Only reset if not in deleting state
+        if (cardState !== 'deleting') {
+          setCardState('default');
+        }
       }, 500);
       return () => clearTimeout(timeout);
     }
-  }, [contact]);
+  }, [contact, cardState]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    setCardState('deleting');
+    
     try {
+      // Wait for the animation to complete before actually deleting
+      await new Promise(resolve => setTimeout(resolve, 300));
       await onDelete(contact.id!);
     } catch (error) {
       setIsDeleting(false);
+      setCardState('default');
     }
   };
 
@@ -60,6 +108,8 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
         return 'rgba(40, 167, 69, 0.3)';
       case 'updated':
         return 'rgba(255, 193, 7, 0.3)';
+      case 'deleting':
+        return 'rgba(220, 53, 69, 0.3)';
       default:
         return 'white';
     }
@@ -78,7 +128,7 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
         <Card 
           className="h-100 shadow-sm" 
           style={{
-            transition: 'background-color 0.5s ease',
+            transition: 'background-color 0.3s ease',
             backgroundColor: getBackgroundColor()
           }}
         >
@@ -94,6 +144,7 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
                   size="sm" 
                   className="p-1" 
                   onClick={() => setIsEditing(true)}
+                  disabled={isDeleting || isExternallyDeleting}
                 >
                   <Pencil size={16} />
                 </Button>
@@ -102,7 +153,7 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
                   size="sm" 
                   className="p-1" 
                   onClick={handleDelete}
-                  disabled={isDeleting}
+                  disabled={isDeleting || isExternallyDeleting}
                 >
                   {isDeleting ? 
                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 
