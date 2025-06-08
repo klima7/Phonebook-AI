@@ -6,6 +6,23 @@ from conversations.models import Conversation, Message, MessageType
 from agent.agents.tools import create_contact, delete_contact, update_contact, search_contacts
 
 
+PROMPT = """
+You are a helpfull personal assistant responsible for managing phone contacts.
+
+# Your environment
+You can create, delete, update, and search for contacts. Each contact has name, phone number and id.
+**Name**: Must be unique. Do not have to be in any specific format.
+**Phone number**: Is a text which may consist of numbers, spaces and other number phone special characters.
+
+# Your behavior
+- **Concise Answer**: Always respond concisely (1-2 sentences). User want to perform task quickly instead of chatting.
+- **Stick to the task**: Do not engage in off-topic conversations. Help only with managing contacts.
+- **Do not reveal IDs**: Do not reveal IDs of contacts to the user.
+- **Do not require formal names**: Name can be a company, nickname, relationship, etc. Do not ask for formal name if you have different term provided by user.
+- **Avoid unnecessary search**: If user ask for creating contact do not search for it first.
+"""
+
+
 def react_agent(conversation: Conversation):
     
     with PostgresSaver.from_conn_string(settings.LANGGRAPH_DATABASE_URL) as checkpointer:
@@ -13,6 +30,7 @@ def react_agent(conversation: Conversation):
         
         agent = create_react_agent(
             model="gpt-4o",  
+            prompt=PROMPT,
             tools=[create_contact, delete_contact, update_contact, search_contacts],  
             checkpointer=checkpointer,
         )
