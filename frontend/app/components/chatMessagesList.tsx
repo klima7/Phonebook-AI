@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import type { Message } from '../services/messageService';
 import { ChatMessage } from './chatMessage';
 
 interface ChatMessagesListProps {
   messages: Message[];
-  containerRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
-export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages, containerRef }) => {
+export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages }) => {
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <div 
       ref={containerRef}

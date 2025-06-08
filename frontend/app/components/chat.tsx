@@ -9,20 +9,9 @@ import { useConversations } from '../hooks/useConversations';
 interface ChatProps {}
 
 export default function Chat({}: ChatProps) {
-  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const { conversations } = useConversations();
   const { messages, loading, error, addMessage } = useMessages(activeConversationId);
-
-  const scrollToBottom = () => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-    }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const handleSend = async (message: string) => {
     const new_message = await addMessage(message);
@@ -56,7 +45,6 @@ export default function Chat({}: ChatProps) {
           <div className="d-flex flex-column flex-grow-1 overflow-hidden">
             <ChatMessagesList 
               messages={messages} 
-              containerRef={messagesContainerRef}
             />
             <ChatSendField
               onSend={handleSend}
