@@ -6,14 +6,13 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navbar from "./components/navbar";
-import { AuthProvider, useAuth } from "./hooks/useAuth";
+import { AuthProvider } from "./hooks/useAuth";
 
-// Import Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const links: Route.LinksFunction = () => [
