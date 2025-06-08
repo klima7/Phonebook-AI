@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import type { Contact } from '~/models';
@@ -14,6 +14,36 @@ interface ContactCardProps {
 export default function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [cardState, setCardState] = useState('default');
+  
+  // Animation for recently created or updated contact
+  useEffect(() => {
+    const currentTime = new Date().getTime();
+    let newState: 'created' | 'updated' | 'default' = 'default';
+    
+    // Check if created recently
+    const createdTime = new Date(contact.created_at!).getTime();
+    const timeSinceCreation = currentTime - createdTime;
+    if (timeSinceCreation < 500) {
+      newState = 'created';
+    }
+    
+    // Check if updated recently
+    const updatedTime = new Date(contact.updated_at!).getTime();
+    const timeDifference = currentTime - updatedTime;
+    if (timeDifference < 500) {
+      newState = 'updated';
+    }
+    
+    // Add animation if recently created or updated
+    if (newState !== 'default') {
+      setCardState(newState);
+      const timeout = setTimeout(() => {
+        setCardState('default');
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [contact]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -21,6 +51,17 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
       await onDelete(contact.id!);
     } catch (error) {
       setIsDeleting(false);
+    }
+  };
+
+  const getBackgroundColor = () => {
+    switch (cardState) {
+      case 'created':
+        return 'rgba(40, 167, 69, 0.3)';
+      case 'updated':
+        return 'rgba(255, 193, 7, 0.3)';
+      default:
+        return 'white';
     }
   };
 
@@ -34,7 +75,13 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
         transition={{ duration: 0.3 }}
         className="h-100"
       >
-        <Card className="h-100 shadow-sm">
+        <Card 
+          className="h-100 shadow-sm" 
+          style={{
+            transition: 'background-color 1s ease',
+            backgroundColor: getBackgroundColor()
+          }}
+        >
           <Card.Body className="d-flex flex-column">
             <div>
               <Card.Title>{contact.name}</Card.Title>
