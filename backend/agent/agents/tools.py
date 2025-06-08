@@ -5,21 +5,6 @@ from contacts.models import Contact
 from agent.context import get_current_user, get_current_conversation
 
 
-def add_tool_message(message: str):
-    Message.objects.create(
-        conversation=get_current_conversation(),
-        content=message,
-        type=MessageType.TOOL,
-    )
-    
-    
-def contact_to_json(contacts: Contact | list[Contact]):
-    if isinstance(contacts, Contact):
-        return {"id": contacts.id, "name": contacts.name, "phone": contacts.phone}
-    else:
-        return [{"id": contact.id, "name": contact.name, "phone": contact.phone} for contact in contacts]
-
-
 def create_contact(name: str, phone: str) -> dict:
     """
     Create a new contact in the database.
@@ -31,13 +16,13 @@ def create_contact(name: str, phone: str) -> dict:
     Returns:
         dict: Dictionary containing the created contact's information (id, name, phone)
     """
-    add_tool_message(f"Creating contact: {name} with phone: {phone}")
+    _add_tool_message(f"Creating contact: {name} with phone: {phone}")
     contact = Contact.objects.create(
         user=get_current_user(),
         name=name,
         phone=phone,
     )
-    return contact_to_json(contact)
+    return _to_json(contact)
 
 def delete_contact(contact_id: int) -> str:
     """
@@ -50,7 +35,7 @@ def delete_contact(contact_id: int) -> str:
         str: Message indicating the contact was deleted successfully
     """
     contact = Contact.objects.get(id=contact_id)
-    add_tool_message(f"Deleting contact: {contact.name} with phone: {contact.phone}")
+    _add_tool_message(f"Deleting contact: {contact.name} with phone: {contact.phone}")
     contact.delete()
     return "Contact deleted successfully"
 
@@ -70,11 +55,11 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
     contact = Contact.objects.get(id=contact_id)
     
     if name and phone:
-        add_tool_message(f"Updating contact: {contact.name} with name: {name} and phone: {phone}")
+        _add_tool_message(f"Updating contact: {contact.name} with name: {name} and phone: {phone}")
     elif name:
-        add_tool_message(f"Updating contact: {contact.name} with new name: {name}")
+        _add_tool_message(f"Updating contact: {contact.name} with new name: {name}")
     elif phone:
-        add_tool_message(f"Updating contact: {contact.name} with new phone: {phone}")
+        _add_tool_message(f"Updating contact: {contact.name} with new phone: {phone}")
     
     if name:
         contact.name = name
@@ -82,7 +67,7 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
         contact.phone = phone
     contact.save()
     
-    return contact_to_json(contact)
+    return _to_json(contact)
 
 def search_contacts(name: str, limit: int = 10) -> list[dict]:
     """
@@ -95,6 +80,21 @@ def search_contacts(name: str, limit: int = 10) -> list[dict]:
     Returns:
         list[dict]: List of dictionaries containing the matching contacts with their id, name and phone number
     """
-    add_tool_message(f"Searching for: {name}")
+    _add_tool_message(f"Searching for: {name}")
     contacts = get_current_user().contacts.filter(name__icontains=name)[:limit]
-    return contact_to_json(contacts)
+    return _to_json(contacts)
+
+
+def _add_tool_message(message: str):
+    Message.objects.create(
+        conversation=get_current_conversation(),
+        content=message,
+        type=MessageType.TOOL,
+    )
+    
+    
+def _to_json(contacts: Contact | list[Contact]):
+    if isinstance(contacts, Contact):
+        return {"id": contacts.id, "name": contacts.name, "phone": contacts.phone}
+    else:
+        return [{"id": contact.id, "name": contact.name, "phone": contact.phone} for contact in contacts]
