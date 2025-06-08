@@ -8,7 +8,7 @@ export interface Conversation {
   updated_at?: string;
 }
 
-export interface ConversationWebSocketMessage {
+export interface ConversationUpdate {
   type: 'create' | 'update' | 'delete';
   id: number;
   value?: Conversation;
@@ -54,7 +54,7 @@ export const useConversationService = () => {
       console.error('Failed to connect to conversations WebSocket:', error);
     });
     
-    const unsubscribe = wsManager.setMessageHandler((data: ConversationWebSocketMessage) => {
+    const unsubscribe = wsManager.setMessageHandler((data: ConversationUpdate) => {
       switch (data.type) {
         case 'create':
           if (data.value && onConversationCreated) {

@@ -10,7 +10,7 @@ export interface Contact {
   updated_at?: string;
 }
 
-export interface ContactWebSocketMessage {
+export interface ContactUpdate {
   type: 'create' | 'update' | 'delete';
   id: number;
   value?: Contact;
@@ -73,7 +73,7 @@ export const useContactService = () => {
       console.error('Failed to connect to contacts WebSocket:', error);
     });
     
-    const unsubscribe = wsManager.setMessageHandler((data: ContactWebSocketMessage) => {
+    const unsubscribe = wsManager.setMessageHandler((data: ContactUpdate) => {
       switch (data.type) {
         case 'create':
           if (data.value && onContactCreated) {

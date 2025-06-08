@@ -10,7 +10,7 @@ export interface Message {
   updated_at?: string;
 }
 
-export interface MessageWebSocketMessage {
+export interface MessageUpdate {
   type: 'create' | 'update' | 'delete';
   id: number;
   value?: Message;
@@ -65,7 +65,7 @@ export const useMessageService = () => {
       console.error('Failed to connect to messages WebSocket:', error);
     });
     
-    const unsubscribe = wsManager.setMessageHandler((data: MessageWebSocketMessage) => {
+    const unsubscribe = wsManager.setMessageHandler((data: MessageUpdate) => {
       switch (data.type) {
         case 'create':
           if (data.value && onMessageCreated) {
