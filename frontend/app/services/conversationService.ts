@@ -7,12 +7,6 @@ export interface Conversation {
   updated_at?: string;
 }
 
-export interface ConversationUpdate {
-  type: 'create' | 'update' | 'delete';
-  id: number;
-  value?: Conversation;
-}
-
 export const useConversationService = () => {
   const api = useApi();
 
@@ -39,17 +33,8 @@ export const useConversationService = () => {
     return response.json();
   };
 
-  const subscribeToConversationUpdates = (
-    onConversationCreated?: (conversation: Conversation) => void,
-    onConversationUpdated?: (conversation: Conversation) => void,
-    onConversationDeleted?: (id: number) => void
-  ) => {
-    // TODO: Implement this
-  };
-
   return {
     fetchConversations,
     createConversation,
-    subscribeToConversationUpdates,
   };
 }; 

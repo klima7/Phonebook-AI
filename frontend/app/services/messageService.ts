@@ -1,5 +1,4 @@
 import { useApi } from '../utils/api';
-// import { useWebSocket } from '../utils/websocket';
 
 export interface Message {
   id?: number;
@@ -10,15 +9,8 @@ export interface Message {
   updated_at?: string;
 }
 
-export interface MessageUpdate {
-  type: 'create' | 'update' | 'delete';
-  id: number;
-  value?: Message;
-}
-
 export const useMessageService = () => {
   const api = useApi();
-  const getWebSocketManager = useWebSocket();
 
   const fetchMessages = async (conversationId?: number): Promise<Message[]> => {
     const url = conversationId 
@@ -49,51 +41,8 @@ export const useMessageService = () => {
     return response.json();
   };
 
-  const subscribeToMessageUpdates = (
-    conversationId: number,
-    onMessageCreated?: (message: Message) => void,
-    onMessageUpdated?: (message: Message) => void,
-    onMessageDeleted?: (id: number) => void
-  ) => {
-    const wsPath = `/api/ws/conversations/${conversationId}/messages/`
-    
-    const wsManager = getWebSocketManager(wsPath);
-    
-    wsManager.connect().then(() => {
-      console.log('Connected to messages WebSocket');
-    }).catch(error => {
-      console.error('Failed to connect to messages WebSocket:', error);
-    });
-    
-    const unsubscribe = wsManager.setMessageHandler((data: MessageUpdate) => {
-      switch (data.type) {
-        case 'create':
-          if (data.value && onMessageCreated) {
-            onMessageCreated(data.value);
-          }
-          break;
-        case 'update':
-          if (data.value && onMessageUpdated) {
-            onMessageUpdated(data.value);
-          }
-          break;
-        case 'delete':
-          if (onMessageDeleted) {
-            onMessageDeleted(data.id);
-          }
-          break;
-      }
-    });
-    
-    return () => {
-      unsubscribe();
-      wsManager.disconnect();
-    };
-  };
-
   return {
     fetchMessages,
     sendMessage,
-    subscribeToMessageUpdates,
   };
 }; 

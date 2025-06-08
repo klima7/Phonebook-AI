@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import type { Message } from '../services/messageService';
 import { useMessageService } from '../services/messageService';
 import { useConversationService } from '../services/conversationService';
+import { useAuthedWebSocket } from '~/utils/websocket';
+
+export interface MessageUpdate {
+  type: 'create' | 'update' | 'delete';
+  id: number;
+  value?: Message;
+}
 
 export const useMessages = (conversationId: number | null) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -9,6 +16,9 @@ export const useMessages = (conversationId: number | null) => {
   const [error, setError] = useState<string | null>(null);
   const messageService = useMessageService();
   const conversationService = useConversationService();
+
+  const wsUrl = conversationId ? `/api/ws/conversations/${conversationId}/messages/` : '';
+  const { lastJsonMessage } = useAuthedWebSocket(wsUrl, {}, !!conversationId);
 
   useEffect(() => {
     // If conversationId is undefined, set empty messages and return early
@@ -33,35 +43,35 @@ export const useMessages = (conversationId: number | null) => {
     };
 
     fetchInitialMessages();
-
-    // Subscribe to real-time updates
-    const unsubscribe = messageService.subscribeToMessageUpdates(
-      conversationId,
-      // Handle message created
-      (newMessage) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      },
-      // Handle message updated
-      (updatedMessage) => {
-        setMessages((prevMessages) =>
-          prevMessages.map((message) =>
-            message.id === updatedMessage.id ? updatedMessage : message
-          )
-        );
-      },
-      // Handle message deleted
-      (deletedId) => {
-        setMessages((prevMessages) =>
-          prevMessages.filter((message) => message.id !== deletedId)
-        );
-      }
-    );
-
-    // Clean up subscription when component unmounts
-    return () => {
-      unsubscribe();
-    };
   }, [conversationId]);
+
+  useEffect(() => {
+    if (!lastJsonMessage) return;
+    
+    const data = lastJsonMessage as MessageUpdate;
+    
+    switch (data.type) {
+      case 'create':
+        if (data.value) {
+          setMessages((prevMessages) => [...prevMessages, data.value as Message]);
+        }
+        break;
+      case 'update':
+        if (data.value) {
+          setMessages((prevMessages) =>
+            prevMessages.map((message) =>
+              message.id === data.id ? data.value as Message : message
+            )
+          );
+        }
+        break;
+      case 'delete':
+        setMessages((prevMessages) =>
+          prevMessages.filter((message) => message.id !== data.id)
+        );
+        break;
+    }
+  }, [lastJsonMessage]);
 
   const addMessage = async (content: string) => {
     try {
