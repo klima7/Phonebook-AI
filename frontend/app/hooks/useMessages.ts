@@ -3,7 +3,7 @@ import type { Message } from '../services/messageService';
 import { useMessageService } from '../services/messageService';
 import { useConversationService } from '../services/conversationService';
 
-export const useMessages = (conversationId?: number) => {
+export const useMessages = (conversationId: number | null) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,7 +12,7 @@ export const useMessages = (conversationId?: number) => {
 
   useEffect(() => {
     // If conversationId is undefined, set empty messages and return early
-    if (conversationId === undefined) {
+    if (conversationId === null) {
       setMessages([]);
       setLoading(false);
       return;
@@ -68,9 +68,9 @@ export const useMessages = (conversationId?: number) => {
       let targetConversationId = conversationId;
       
       // If no conversation ID exists, create a new conversation first
-      if (targetConversationId === undefined) {
+      if (targetConversationId === null) {
         const newConversation = await conversationService.createConversation();
-        targetConversationId = newConversation.id;
+        targetConversationId = newConversation.id!;
       }
       
       const newMessage = await messageService.sendMessage(content, targetConversationId);

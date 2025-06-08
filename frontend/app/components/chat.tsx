@@ -9,10 +9,10 @@ import { useConversations } from '../hooks/useConversations';
 interface ChatProps {}
 
 export default function Chat({}: ChatProps) {
-  const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
-  const { conversations, loading: conversationsLoading, error: conversationsError, createNewConversation } = useConversations();
-  const { messages, loading, error, addMessage } = useMessages(activeConversationId || undefined);
+  const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+  const { conversations } = useConversations();
+  const { messages, loading, error, addMessage } = useMessages(activeConversationId);
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -24,19 +24,9 @@ export default function Chat({}: ChatProps) {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    if (conversations.length > 0 && activeConversationId === null) {
-      setActiveConversationId(conversations[0].id!);
-    }
-  }, [conversations, conversationsLoading]);
-
   const handleSend = async (message: string) => {
     const new_message = await addMessage(message);
     setActiveConversationId(new_message.conversation_id!);
-  };
-
-  const handleSelectConversation = (id: number | null) => {
-    setActiveConversationId(id);
   };
 
   return (
@@ -46,8 +36,7 @@ export default function Chat({}: ChatProps) {
       <ConversationTabs
         conversations={conversations}
         activeConversationId={activeConversationId}
-        onSelectConversation={handleSelectConversation}
-        loading={conversationsLoading}
+        onSelectConversation={setActiveConversationId}
       />
       
       <div className="d-flex flex-column" style={{ height: 'calc(100vh - 220px)' }}>
