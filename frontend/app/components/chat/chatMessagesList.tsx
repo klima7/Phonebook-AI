@@ -14,7 +14,10 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages }) 
 
   const scrollToBottom = () => {
     if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
     }
   };
 
