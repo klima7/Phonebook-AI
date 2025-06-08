@@ -1,23 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Form, Button, InputGroup } from 'react-bootstrap';
 import { Send, SendFill } from 'react-bootstrap-icons';
 
 interface ChatSendFieldProps {
-  message: string;
-  setMessage: (message: string) => void;
-  isSending: boolean;
-  onSubmit: (e: React.FormEvent) => void;
-  onKeyDown: (e: React.KeyboardEvent) => void;
+  onSend: (msg: string) => void;
 }
 
 export const ChatSendField: React.FC<ChatSendFieldProps> = ({ 
-  message, 
-  setMessage, 
-  isSending, 
-  onSubmit, 
-  onKeyDown 
+  onSend
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [message, setMessage] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -28,18 +22,40 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
     }
   }, [message]);
 
+  const handleSend = async (msg: string) => {
+    setIsSending(true);
+    try {
+      await onSend(msg);
+      setMessage('');
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSend(message);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend(message);
+    }
+  };
+
   return (
     <div className="pb-0 pt-1 border-top">
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={handleSubmit}>
         <InputGroup>
           <Form.Control
             as="textarea"
             ref={textareaRef}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={onKeyDown}
+            onKeyDown={handleKeyDown}
             placeholder="Anything you want..."
-            disabled={isSending}
+            disabled={false}
             style={{ 
               resize: 'none', 
               minHeight: '40px',
@@ -53,7 +69,7 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
           <Button 
             type="submit" 
             variant="primary"
-            disabled={isSending || !message.trim()}
+            disabled={false}
             style={{ 
               borderRadius: '0 25px 25px 0',
               width: '50px'
@@ -68,4 +84,4 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
       </Form>
     </div>
   );
-}; 
+};

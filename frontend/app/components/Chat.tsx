@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Card, Alert, Spinner } from 'react-bootstrap';
+import { useState, useRef, useEffect } from 'react';
+import { Alert, Spinner } from 'react-bootstrap';
 import { ChatMessagesList } from './ChatMessagesList';
 import { ChatSendField } from './ChatSendField';
 import { ConversationTabs } from './ConversationTabs';
@@ -11,8 +11,6 @@ interface ChatProps {
 }
 
 export default function Chat({ onConversationChange }: ChatProps) {
-  const [message, setMessage] = useState('');
-  const [isSending, setIsSending] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
   const { conversations, loading: conversationsLoading, error: conversationsError, createNewConversation } = useConversations();
@@ -39,31 +37,11 @@ export default function Chat({ onConversationChange }: ChatProps) {
     }
   }, [conversations, conversationsLoading]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-    
-    setIsSending(true);
-    const currentMessage = message;
-    setMessage('');
-    
-    try {
-      const new_message = await addMessage(currentMessage);
-      setActiveConversationId(new_message.conversation_id!);
-      if (onConversationChange) {
-        onConversationChange(new_message.conversation_id!);
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-    } finally {
-      setIsSending(false);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
+  const handleSend = async (message: string) => {
+    const new_message = await addMessage(message);
+    setActiveConversationId(new_message.conversation_id!);
+    if (onConversationChange) {
+      onConversationChange(new_message.conversation_id!);
     }
   };
 
@@ -105,11 +83,7 @@ export default function Chat({ onConversationChange }: ChatProps) {
               containerRef={messagesContainerRef}
             />
             <ChatSendField
-              message={message}
-              setMessage={setMessage}
-              isSending={isSending}
-              onSubmit={handleSubmit}
-              onKeyDown={handleKeyDown}
+              onSend={handleSend}
             />
           </div>
         )}
