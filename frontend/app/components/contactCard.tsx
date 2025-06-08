@@ -37,16 +37,7 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
         <Card className="h-100 shadow-sm">
           <Card.Body className="d-flex flex-column">
             <div>
-              <Card.Title 
-                style={{
-                  height: '3rem',
-                  overflow: 'hidden',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  lineHeight: '1.5rem'
-                }}
-              >{contact.name}</Card.Title>
+              <Card.Title>{contact.name}</Card.Title>
             </div>
             <div className="mt-auto d-flex justify-content-between align-items-center">
               <Card.Text className="text-muted mb-0">{contact.phone}</Card.Text>
@@ -56,7 +47,6 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
                   size="sm" 
                   className="p-1" 
                   onClick={() => setIsEditing(true)}
-                  aria-label="Edit contact"
                 >
                   <Pencil size={16} />
                 </Button>
@@ -66,7 +56,6 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
                   className="p-1" 
                   onClick={handleDelete}
                   disabled={isDeleting}
-                  aria-label="Delete contact"
                 >
                   {isDeleting ? 
                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 
