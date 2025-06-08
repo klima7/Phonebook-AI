@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
+import { useAuthService } from "../services/authService";
 
 interface RegisterPanelProps {}
 
@@ -11,6 +12,7 @@ export default function RegisterPanel({}: RegisterPanelProps) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const authService = useAuthService();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,25 +27,9 @@ export default function RegisterPanel({}: RegisterPanelProps) {
     }
 
     try {
-      const response = await fetch('/api/auth/register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Handle error response from the server
-        const errorMessage = data.username || data.password || 'Registration failed';
-        throw new Error(Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage);
-      }
-
+      await authService.register({ username, password });
       // Registration successful
-      console.log('Registration successful:', data);
-      
+      console.log('Registration successful');
       navigate('/login');
     } catch (err) {
       console.error('Registration error:', err);

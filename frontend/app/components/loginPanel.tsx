@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
-import { useAuth } from "../hooks/useAuth";
+import { useAuthService } from "../services/authService";
 
 interface LoginPanelProps {}
 
@@ -11,7 +11,7 @@ export default function LoginPanel({}: LoginPanelProps) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const authService = useAuthService();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,26 +19,7 @@ export default function LoginPanel({}: LoginPanelProps) {
     setIsLoading(true);
     
     try {
-      const response = await fetch('/api/auth/token/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.non_field_errors?.[0] || 'Invalid credentials');
-      }
-
-      if (!data.token) {
-        throw new Error('No authentication token received');
-      }
-
-      // Store token and redirect
-      login(data.token);
+      await authService.login({ username, password });
       navigate("/");
     } catch (err) {
       console.error('Login error:', err);
