@@ -13,6 +13,9 @@ export default function Chat({}: ChatProps) {
   const { conversations } = useConversations();
   const { messages, error, addMessage } = useMessages(activeConversationId);
 
+  const activeConversation = conversations.find(c => c.id === activeConversationId);
+  const activeConversationInProgress = activeConversation?.in_progress ?? false;
+
   const handleSend = async (message: string) => {
     const new_message = await addMessage(message);
     setActiveConversationId(new_message.conversation_id!);
@@ -41,6 +44,7 @@ export default function Chat({}: ChatProps) {
           />
           <ChatSendField
             onSend={handleSend}
+            disabled={activeConversationInProgress}
           />
         </div>
       </div>

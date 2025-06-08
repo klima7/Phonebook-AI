@@ -4,10 +4,12 @@ import { Send, SendFill } from 'react-bootstrap-icons';
 
 interface ChatSendFieldProps {
   onSend: (msg: string) => void;
+  disabled: boolean;
 }
 
 export const ChatSendField: React.FC<ChatSendFieldProps> = ({ 
-  onSend
+  onSend,
+  disabled
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
@@ -34,13 +36,17 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSend(message);
+    if (!disabled) {
+      handleSend(message);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend(message);
+      if (!disabled) {
+        handleSend(message);
+      }
     }
   };
 
@@ -69,7 +75,7 @@ export const ChatSendField: React.FC<ChatSendFieldProps> = ({
           <Button 
             type="submit" 
             variant="primary"
-            disabled={false}
+            disabled={disabled}
             style={{ 
               borderRadius: '0 25px 25px 0',
               width: '50px'
