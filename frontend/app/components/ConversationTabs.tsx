@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import { PlusLg, ChatDots } from 'react-bootstrap-icons';
+import { formatDistanceToNow } from 'date-fns';
 import type { Conversation } from '../services/conversationService';
 
 interface ConversationTabsProps {
@@ -70,7 +71,9 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
                 placement="bottom"
                 overlay={
                   <Tooltip id={`conversation-${conversation.id}`}>
-                    {new Date(conversation.created_at || '').toLocaleDateString()}
+                    {conversation.created_at ? 
+                      formatDistanceToNow(new Date(conversation.created_at), { addSuffix: true }) : 
+                      'Unknown time'}
                   </Tooltip>
                 }
               >
@@ -84,7 +87,9 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
                     className="d-flex align-items-center justify-content-center"
                     style={{ width: '42px', height: '42px' }}
                     onClick={() => onSelectConversation(conversation.id!)}
-                    aria-label={`Conversation from ${new Date(conversation.created_at || '').toLocaleDateString()}`}
+                    aria-label={`Conversation from ${conversation.created_at ? 
+                      formatDistanceToNow(new Date(conversation.created_at), { addSuffix: true }) : 
+                      'unknown time'}`}
                   >
                     <ChatDots size={16} />
                   </Button>
