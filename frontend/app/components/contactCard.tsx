@@ -20,19 +20,19 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
   useEffect(() => {
     const currentTime = new Date().getTime();
     let newState: 'created' | 'updated' | 'default' = 'default';
+
+    // Check if updated recently
+    const updatedTime = new Date(contact.updated_at!).getTime();
+    const timeDifference = currentTime - updatedTime;
+    if (timeDifference < 500) {
+      newState = 'updated';
+    }
     
     // Check if created recently
     const createdTime = new Date(contact.created_at!).getTime();
     const timeSinceCreation = currentTime - createdTime;
     if (timeSinceCreation < 500) {
       newState = 'created';
-    }
-    
-    // Check if updated recently
-    const updatedTime = new Date(contact.updated_at!).getTime();
-    const timeDifference = currentTime - updatedTime;
-    if (timeDifference < 500) {
-      newState = 'updated';
     }
     
     // Add animation if recently created or updated
@@ -78,7 +78,7 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
         <Card 
           className="h-100 shadow-sm" 
           style={{
-            transition: 'background-color 1s ease',
+            transition: 'background-color 0.5s ease',
             backgroundColor: getBackgroundColor()
           }}
         >
