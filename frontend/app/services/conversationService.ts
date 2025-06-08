@@ -1,5 +1,4 @@
 import { useApi } from '../utils/api';
-import { useWebSocket } from '../utils/websocket';
 
 export interface Conversation {
   id?: number;
@@ -16,7 +15,6 @@ export interface ConversationUpdate {
 
 export const useConversationService = () => {
   const api = useApi();
-  const getWebSocketManager = useWebSocket();
 
   const fetchConversations = async (): Promise<Conversation[]> => {
     const response = await api.get('/api/conversations/');
@@ -46,38 +44,7 @@ export const useConversationService = () => {
     onConversationUpdated?: (conversation: Conversation) => void,
     onConversationDeleted?: (id: number) => void
   ) => {
-    const wsManager = getWebSocketManager('/api/ws/conversations/');
-    
-    wsManager.connect().then(() => {
-      console.log('Connected to conversations WebSocket');
-    }).catch(error => {
-      console.error('Failed to connect to conversations WebSocket:', error);
-    });
-    
-    const unsubscribe = wsManager.setMessageHandler((data: ConversationUpdate) => {
-      switch (data.type) {
-        case 'create':
-          if (data.value && onConversationCreated) {
-            onConversationCreated(data.value);
-          }
-          break;
-        case 'update':
-          if (data.value && onConversationUpdated) {
-            onConversationUpdated(data.value);
-          }
-          break;
-        case 'delete':
-          if (onConversationDeleted) {
-            onConversationDeleted(data.id);
-          }
-          break;
-      }
-    });
-    
-    return () => {
-      unsubscribe();
-      wsManager.disconnect();
-    };
+    // TODO: Implement this
   };
 
   return {

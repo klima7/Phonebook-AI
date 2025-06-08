@@ -2,7 +2,7 @@
  * Utility for making authenticated API requests
  */
 import { useAuth } from '../hooks/useAuth';
-
+import { useEffect } from 'react';
 // Check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
 

@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react';
 import type { Contact } from '../services/contactService';
 import { useContactService } from '../services/contactService';
+import { useAuthedWebSocket } from '~/utils/websocket';
+
+export interface ContactUpdate {
+  type: 'create' | 'update' | 'delete';
+  id: number;
+  value?: Contact;
+}
 
 export const useContacts = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const contactService = useContactService();
+
+  const { lastJsonMessage } = useAuthedWebSocket('/api/ws/contacts/');
 
   useEffect(() => {
     const fetchInitialContacts = async () => {
@@ -24,34 +33,35 @@ export const useContacts = () => {
     };
 
     fetchInitialContacts();
-
-    // Subscribe to real-time updates
-    const unsubscribe = contactService.subscribeToContactUpdates(
-      // Handle contact created
-      (newContact) => {
-        setContacts((prevContacts) => [...prevContacts, newContact]);
-      },
-      // Handle contact updated
-      (updatedContact) => {
-        setContacts((prevContacts) =>
-          prevContacts.map((contact) =>
-            contact.id === updatedContact.id ? updatedContact : contact
-          )
-        );
-      },
-      // Handle contact deleted
-      (deletedId) => {
-        setContacts((prevContacts) =>
-          prevContacts.filter((contact) => contact.id !== deletedId)
-        );
-      }
-    );
-
-    // Clean up subscription when component unmounts
-    return () => {
-      unsubscribe();
-    };
   }, []);
+
+  useEffect(() => {
+    if (!lastJsonMessage) return;
+    
+    const data = lastJsonMessage as ContactUpdate;
+    
+    switch (data.type) {
+      case 'create':
+        if (data.value) {
+          setContacts((prevContacts) => [...prevContacts, data.value as Contact]);
+        }
+        break;
+      case 'update':
+        if (data.value) {
+          setContacts((prevContacts) =>
+            prevContacts.map((contact) =>
+              contact.id === data.id ? data.value as Contact : contact
+            )
+          );
+        }
+        break;
+      case 'delete':
+        setContacts((prevContacts) =>
+          prevContacts.filter((contact) => contact.id !== data.id)
+        );
+        break;
+    }
+  }, [lastJsonMessage]);
 
   const addContact = async (contact: Omit<Contact, 'id'>) => {
     try {
