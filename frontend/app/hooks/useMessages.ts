@@ -18,7 +18,7 @@ export const useMessages = (conversationId: number | null) => {
   const conversationService = useConversationService();
 
   const wsUrl = conversationId ? `/api/ws/conversations/${conversationId}/messages/` : '';
-  const { lastJsonMessage } = useAuthedWebSocket(wsUrl, {}, !!conversationId);
+  const { lastJsonMessage } = useAuthedWebSocket(wsUrl, {}, !!wsUrl);
 
   useEffect(() => {
     // If conversationId is undefined, set empty messages and return early

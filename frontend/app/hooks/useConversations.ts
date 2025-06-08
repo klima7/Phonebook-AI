@@ -21,7 +21,6 @@ export const useConversations = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const conversationService = useConversationService();
-
   const { lastJsonMessage } = useAuthedWebSocket('/api/ws/conversations/');
 
   useEffect(() => {

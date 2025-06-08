@@ -14,7 +14,6 @@ export const useContacts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const contactService = useContactService();
-
   const { lastJsonMessage } = useAuthedWebSocket('/api/ws/contacts/');
 
   useEffect(() => {
