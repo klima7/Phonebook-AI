@@ -4,6 +4,9 @@ from weaviate.collections import Collection
 import weaviate.classes.config as wcc
 import weaviate.classes.query as wcq
 from openai import OpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema.output_parser import StrOutputParser
 
 from .models import Contact
 
@@ -45,7 +48,7 @@ def weaviate_add_contact(contact: Contact):
             "model_id": contact.id,
             "user_id": contact.user.id
         },
-        vector=_embed(contact.name)
+        vector=_embed(_augment_name(contact.name))
     )
     
     
@@ -66,7 +69,7 @@ def weaviate_update_contact(contact: Contact, update_embedding: bool = True):
             contacts_collection.data.update(
                 uuid=obj.uuid,
                 properties=properties,
-                vector=_embed(contact.name)
+                vector=_embed(_augment_name(contact.name))
             )
         else:
             contacts_collection.data.update(
@@ -100,12 +103,21 @@ def search_user_contacts(user_id: int, query: str, limit: int = 10) -> list[Cont
 
 
 def _embed(text: str) -> list[float]:
-    client = OpenAI()
-    response = client.embeddings.create(
-        input=text,
-        model="text-embedding-3-small"
-    )
-    return response.data[0].embedding
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    return embeddings.embed_query(text)
+
+
+def _augment_name(name: str) -> str:
+    llm = ChatOpenAI(model="gpt-4o-mini")
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are a tags extractor for phone contact names. You will be given a contact name and you have to directly output in one line, separated by commas, all tags which you can deduce. For example: female, young, family, sibling, etc. Output comma separated tags directly, without any preamble or postamble."),
+        ("user", "This is the contact name: {name}. Now directly generate the comma separated tags. Go!")
+    ])
+    
+    chain = prompt | llm | StrOutputParser()
+    completion = chain.invoke({"name": name})
+    return name + ", " + completion
 
 
 def _weaviate_check_collection_exists(collection_name: str) -> bool:

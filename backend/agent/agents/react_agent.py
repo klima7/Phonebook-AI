@@ -58,8 +58,6 @@ def react_agent(conversation: Conversation):
             }
             
         ):
-            print("chunk", chunk, end="", flush=True)
-            
             if "agent" in chunk:
                 messages = chunk["agent"]["messages"]
                 for message in messages:

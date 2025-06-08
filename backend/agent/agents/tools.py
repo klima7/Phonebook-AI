@@ -89,6 +89,7 @@ def search_contacts_semantic(query: str, limit: int = 10) -> list[dict]:
     
     Unlike search_contacts which uses case-insensitive partial matching, this function
     uses vector embeddings to find contacts semantically related to the query.
+    Use it for searching for example "brother", "grandparent", "womans"
     
     Args:
         query: The semantic query to search for
