@@ -16,10 +16,15 @@ class Conversation(models.Model):
 
     def __str__(self):
         return f"{self.user.username}"
-
+    
+    def last_message_of_type(self, type: MessageType):
+        return self.messages.filter(type=type).order_by("-created_at").first()
+    
+    def last_user_message(self):
+        return self.last_message_of_type(MessageType.USER)
 
 class Message(models.Model):
-    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name="messages")
     type = models.CharField(max_length=10, choices=MessageType.choices)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
