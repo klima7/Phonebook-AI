@@ -2,11 +2,9 @@ import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 
-interface RegisterPanelProps {
-  onRegisterSuccess?: () => void;
-}
+interface RegisterPanelProps {}
 
-export default function RegisterPanel({ onRegisterSuccess }: RegisterPanelProps) {
+export default function RegisterPanel({}: RegisterPanelProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -46,11 +44,7 @@ export default function RegisterPanel({ onRegisterSuccess }: RegisterPanelProps)
       // Registration successful
       console.log('Registration successful:', data);
       
-      if (onRegisterSuccess) {
-        onRegisterSuccess();
-      } else {
-        navigate('/login');
-      }
+      navigate('/login');
     } catch (err) {
       console.error('Registration error:', err);
       setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');

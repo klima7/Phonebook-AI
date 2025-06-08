@@ -3,11 +3,9 @@ import { useState } from "react";
 import { Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 import { useAuth } from "../hooks/useAuth";
 
-interface LoginPanelProps {
-  onLoginSuccess?: () => void;
-}
+interface LoginPanelProps {}
 
-export default function LoginPanel({ onLoginSuccess }: LoginPanelProps) {
+export default function LoginPanel({}: LoginPanelProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -41,11 +39,7 @@ export default function LoginPanel({ onLoginSuccess }: LoginPanelProps) {
 
       // Store token and redirect
       login(data.token);
-      if (onLoginSuccess) {
-        onLoginSuccess();
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     } catch (err) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
