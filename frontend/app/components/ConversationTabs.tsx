@@ -80,7 +80,7 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
                 <motion.div
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="me-2"
+                  className="me-2 position-relative"
                 >
                   <Button
                     variant={activeConversationId === conversation.id ? "primary" : "outline-secondary"}
@@ -93,6 +93,20 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
                   >
                     <ChatDots size={16} />
                   </Button>
+                  {conversation.in_progress && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '4px',
+                        right: '4px',
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: 'lightgreen',
+                        borderRadius: '50%',
+                        zIndex: 2
+                      }}
+                    />
+                  )}
                 </motion.div>
               </OverlayTrigger>
             ))}
