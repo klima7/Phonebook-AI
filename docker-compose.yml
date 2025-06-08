@@ -41,6 +41,55 @@ services:
       interval: 5s
       retries: 3
 
+  langfuse-database:
+    image: postgres:17
+    restart: always
+    shm_size: 1000gb
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    volumes:
+      - ./data/langfuse_database:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U user -d postgres -h 127.0.0.1
+      interval: 5s
+      retries: 3
+
+  langfuse:
+    image: klima77/langfuse-prefixed:latest
+    environment:
+      - DATABASE_URL=postgresql://user:password@langfuse-database:5432/postgres
+      - NEXTAUTH_SECRET=mysecret
+      - SALT=mysalt
+      - ENCRYPTION_KEY=ae4dcb5865d8366739990219c90a4b1e7796af8f83c09a5d277b11faec616cfe
+      - NEXTAUTH_URL=http://localhost/
+      - LANGFUSE_INIT_ORG_ID=1
+      - LANGFUSE_INIT_ORG_NAME=phonebook
+      - LANGFUSE_INIT_PROJECT_ID=1
+      - LANGFUSE_INIT_PROJECT_NAME=phonebook
+      - LANGFUSE_INIT_PROJECT_PUBLIC_KEY=pk-phonebook
+      - LANGFUSE_INIT_PROJECT_SECRET_KEY=sk-phonebook
+      - LANGFUSE_INIT_USER_EMAIL=admin@gmail.com
+      - LANGFUSE_INIT_USER_NAME=admin
+      - LANGFUSE_INIT_USER_PASSWORD=password
+      - NEXT_PUBLIC_BASE_PATH=/langfuse
+    depends_on:
+      langfuse-database:
+        condition: service_healthy
+
+  weaviate:
+    image: semitechnologies/weaviate:1.30.7
+    restart: on-failure:0
+    volumes:
+      - ./data/weaviate:/var/lib/weaviate
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      CLUSTER_HOSTNAME: 'node1'
+
   backend:
     build:
       context: backend
