@@ -11,7 +11,7 @@ import React, { useEffect } from 'react';
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navbar from "./components/Navbar";
-import { AuthProvider, useAuth } from "./hooks/UseAuth";
+import { AuthProvider, useAuth } from "./hooks/useAuth";
 
 // Import Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';

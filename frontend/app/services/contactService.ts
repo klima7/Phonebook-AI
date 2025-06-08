@@ -1,4 +1,4 @@
-import { useAuth } from '../hooks/UseAuth';
+import { useAuth } from '../hooks/useAuth';
 import { useApi } from '../utils/api';
 import { useWebSocket } from '../utils/websocket';
 

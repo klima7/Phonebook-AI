@@ -2,7 +2,7 @@ import { Alert, Spinner, Row, Col } from 'react-bootstrap';
 import { AnimatePresence } from 'framer-motion';
 import ContactCard from "./ContactCard";
 import AddContactCard from "./AddContactCard";
-import { useContacts } from '../hooks/UseContacts';
+import { useContacts } from '../hooks/useContacts';
 
 export default function ContactsList() {
   const { contacts, loading, error, addContact, updateContact, deleteContact } = useContacts();

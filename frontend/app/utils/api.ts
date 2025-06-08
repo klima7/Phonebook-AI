@@ -1,7 +1,7 @@
 /**
  * Utility for making authenticated API requests
  */
-import { useAuth } from '../hooks/UseAuth';
+import { useAuth } from '../hooks/useAuth';
 
 // Check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';

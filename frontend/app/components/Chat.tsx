@@ -3,8 +3,8 @@ import { Alert, Spinner } from 'react-bootstrap';
 import { ChatMessagesList } from './ChatMessagesList';
 import { ChatSendField } from './ChatSendField';
 import { ConversationTabs } from './ConversationTabs';
-import { useMessages } from '../hooks/UseMessages';
-import { useConversations } from '../hooks/UseConversations';
+import { useMessages } from '../hooks/useMessages';
+import { useConversations } from '../hooks/useConversations';
 
 interface ChatProps {}
 
