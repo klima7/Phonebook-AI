@@ -72,19 +72,8 @@ export const useApi = () => {
   const { authInitialized, getAuthHeader, isAuthenticated } = useAuth();
   
   const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
-    // Wait for auth to be initialized before making requests
     if (!authInitialized) {
-      console.warn('Attempting API request before auth initialization is complete');
-      await new Promise(resolve => {
-        const checkInit = () => {
-          if (document.querySelector('body')?.getAttribute('data-auth-initialized') === 'true') {
-            resolve(true);
-            return;
-          }
-          setTimeout(checkInit, 50);
-        };
-        checkInit();
-      });
+      console.error('Attempting API request before auth initialization is complete');
     }
     
     const headers = {

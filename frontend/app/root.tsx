@@ -54,23 +54,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Component to set the auth initialization status
-function AuthInitializer() {
-  const { authInitialized } = useAuth();
-  
-  useEffect(() => {
-    if (authInitialized) {
-      document.body.setAttribute('data-auth-initialized', 'true');
-    }
-  }, [authInitialized]);
-  
-  return null;
-}
-
 export default function App() {
   return (
     <AuthProvider>
-      <AuthInitializer />
       <Navbar />
       <main className="content-container">
         <Outlet />
