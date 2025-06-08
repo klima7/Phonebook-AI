@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import type { Contact } from '../services/contactService';
+import PhoneInputField from './PhoneInputField';
 
 interface UpdateContactModalProps {
   show: boolean;
@@ -62,13 +63,11 @@ export default function UpdateContactModal({ show, onHide, contact, onEdit }: Up
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Phone Number</Form.Label>
-            <Form.Control 
-              type="text" 
-              value={phone} 
-              onChange={(e) => setPhone(e.target.value)}
-              required 
-              placeholder="Enter phone number"
-              className="bg-white border border-secondary"
+            <PhoneInputField
+              value={phone}
+              onChange={setPhone}
+              required
+              className="w-100 bg-white border border-secondary"
             />
           </Form.Group>
         </Form>
@@ -84,7 +83,7 @@ export default function UpdateContactModal({ show, onHide, contact, onEdit }: Up
         <Button 
           variant="primary" 
           onClick={handleSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !name.trim() || !phone.trim()}
         >
           {isSubmitting ? (
             <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
