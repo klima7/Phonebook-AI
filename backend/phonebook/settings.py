@@ -37,6 +37,7 @@ REDIS_URL = os.getenv("REDIS_URL")
 # Application definition
 
 INSTALLED_APPS = [
+    'agent',
     'conversations',
     'contacts',
     'users',
