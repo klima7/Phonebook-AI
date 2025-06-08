@@ -1,5 +1,3 @@
-import { useApi } from '../utils/api';
-
 export interface LoginCredentials {
   username: string;
   password: string;
@@ -11,7 +9,6 @@ export interface RegisterCredentials {
 }
 
 export const useAuthService = () => {
-  const api = useApi();
 
   const getAuthToken = async (credentials: LoginCredentials): Promise<string> => {
     const response = await fetch('/api/auth/token/', {

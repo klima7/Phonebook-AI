@@ -1,5 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { useAuthService } from '../services/authService';
+import type { LoginCredentials, RegisterCredentials } from '../services/authService';
 
 interface AuthContextType {
   token: string | null;
@@ -7,7 +9,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   authInitialized: boolean;
-  login: (token: string) => void;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (credentials: RegisterCredentials) => Promise<void>;
   logout: () => void;
   getAuthHeader: () => { Authorization: string } | {};
 }
@@ -39,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [authInitialized, setAuthInitialized] = useState(false);
+  const authService = useAuthService();
   
   // Initialize token from localStorage only on client-side
   useEffect(() => {
@@ -94,9 +98,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchCurrentUser();
   }, [token, isInitialized]);
 
-  const login = (newToken: string) => {
-    setStorageItem('token', newToken);
-    setToken(newToken);
+  const login = async (credentials: LoginCredentials) => {
+    try {
+      const newToken = await authService.getAuthToken(credentials);
+      setStorageItem('token', newToken);
+      setToken(newToken);
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
+    }
+  };
+
+  const register = async (credentials: RegisterCredentials) => {
+    try {
+      await authService.register(credentials);
+    } catch (error) {
+      console.error('Registration failed:', error);
+      throw error;
+    }
   };
 
   const logout = () => {
@@ -117,6 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       authInitialized,
       login, 
+      register,
       logout,
       getAuthHeader
     }}>
