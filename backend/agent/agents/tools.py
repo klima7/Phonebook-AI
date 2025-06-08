@@ -3,7 +3,7 @@ import json
 from conversations.models import Message, MessageType
 from contacts.models import Contact
 from agent.context import get_current_user, get_current_conversation
-
+from contacts.weaviate import search_user_contacts
 
 def create_contact(name: str, phone: str) -> dict:
     """
@@ -77,6 +77,25 @@ def search_contacts(name: str, limit: int = 10) -> list[dict]:
     """
     _add_tool_message(f"Searching for \"{name}\"")
     contacts = get_current_user().contacts.filter(name__icontains=name)[:limit]
+    return _to_json(contacts)
+
+
+def search_contacts_semantic(query: str, limit: int = 10) -> list[dict]:
+    """
+    Search for contacts using semantic search (meaning-based) rather than exact text matching.
+    
+    Unlike search_contacts which uses case-insensitive partial matching, this function
+    uses vector embeddings to find contacts semantically related to the query.
+    
+    Args:
+        query: The semantic query to search for
+        limit: Maximum number of results to return (default: 10)
+        
+    Returns:
+        list[dict]: List of dictionaries containing the semantically matching contacts with their id, name and phone number
+    """
+    _add_tool_message(f"Searching semantically for \"{query}\"")
+    contacts = search_user_contacts(get_current_user().id, query, limit)
     return _to_json(contacts)
 
 

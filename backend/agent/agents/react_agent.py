@@ -4,7 +4,7 @@ from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.postgres import PostgresSaver
 
 from conversations.models import Conversation, Message, MessageType
-from agent.agents.tools import create_contact, delete_contact, update_contact, search_contacts
+from agent.agents.tools import create_contact, delete_contact, update_contact, search_contacts, search_contacts_semantic
 
 
 PROMPT = """
@@ -34,7 +34,13 @@ def react_agent(conversation: Conversation):
         agent = create_react_agent(
             model=model,
             prompt=PROMPT,
-            tools=[create_contact, delete_contact, update_contact, search_contacts],  
+            tools=[
+                create_contact,
+                delete_contact,
+                update_contact,
+                search_contacts,
+                search_contacts_semantic
+            ],  
             checkpointer=checkpointer,
         )
         

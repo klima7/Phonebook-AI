@@ -7,3 +7,5 @@ class ContactsConfig(AppConfig):
 
     def ready(self):
         import contacts.signals
+        from contacts.weaviate import create_contacts_collection
+        create_contacts_collection()

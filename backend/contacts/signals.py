@@ -5,10 +5,11 @@ from asgiref.sync import async_to_sync
 
 from .models import Contact
 from .serializers import ContactSerializer
+from .weaviate import weaviate_add_contact, weaviate_update_contact, weaviate_delete_contact
 
 
 @receiver(post_save, sender=Contact)
-def contact_created_or_updated(sender, instance, created, **kwargs):
+def send_create_update_notification(sender, instance, created, **kwargs):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         f"contacts_{instance.user.id}",
@@ -20,8 +21,9 @@ def contact_created_or_updated(sender, instance, created, **kwargs):
         )
     )
 
+
 @receiver(post_delete, sender=Contact)
-def contact_deleted(sender, instance, **kwargs):
+def send_delete_notification(sender, instance, **kwargs):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         f"contacts_{instance.user.id}",
@@ -31,3 +33,16 @@ def contact_deleted(sender, instance, **kwargs):
             id=instance.id
         )
     )
+
+
+@receiver(post_save, sender=Contact)
+def add_contact_to_weaviate(sender, instance, created, **kwargs):
+    if created:
+        weaviate_add_contact(instance)
+    else:
+        weaviate_update_contact(instance)
+    
+    
+@receiver(post_delete, sender=Contact)
+def delete_contact_from_weaviate(sender, instance, **kwargs):
+    weaviate_delete_contact(instance)
