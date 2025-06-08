@@ -78,7 +78,6 @@ services:
       redis:
         condition: service_healthy
 
-
   flower:
     build:
       context: backend
