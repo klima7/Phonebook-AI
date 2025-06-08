@@ -10,14 +10,10 @@ export interface RegisterCredentials {
   password: string;
 }
 
-export interface User {
-  username: string;
-}
-
 export const useAuthService = () => {
   const api = useApi();
 
-  const login = async (credentials: LoginCredentials): Promise<string> => {
+  const getAuthToken = async (credentials: LoginCredentials): Promise<string> => {
     const response = await fetch('/api/auth/token/', {
       method: 'POST',
       headers: {
@@ -56,19 +52,8 @@ export const useAuthService = () => {
     }
   };
 
-  const getCurrentUser = async (): Promise<User> => {
-    const response = await api.get('/api/auth/me/');
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch user data');
-    }
-    
-    return response.json();
-  };
-
   return {
-    login,
+    getAuthToken,
     register,
-    getCurrentUser,
   };
 };
