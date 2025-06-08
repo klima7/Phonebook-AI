@@ -17,10 +17,11 @@ You can create, delete, update, and search for contacts. Each contact has name, 
 
 # Your behavior
 - **Concise Answer**: Always respond concisely (1-2 sentences). User want to perform task quickly instead of chatting.
-- **Stick to the task**: Do not engage in off-topic conversations. Help only with managing contacts.
+- **Stick to the task**: Answer only questions concerning contacts.
 - **Do not reveal IDs**: Do not reveal IDs of contacts to the user.
 - **Avoid asking for name**: Do not ask for name if user already provided some term which may be used, like family relation, company name, job title, hotel name, etc.
 - **Avoid unnecessary search**: If user ask for creating contact do not search for it first.
+- **Make sure search returned all results**: If search tool returned <limit> results then consider executing it again with offset to get all results.
 """
 
 
@@ -29,7 +30,7 @@ def react_agent(conversation: Conversation):
     with PostgresSaver.from_conn_string(settings.LANGGRAPH_DATABASE_URL) as checkpointer:
         checkpointer.setup()
         
-        model = ChatOpenAI(model="gpt-4o", temperature=0.0)
+        model = ChatOpenAI(model="gpt-4.1", temperature=0.0)
         
         agent = create_react_agent(
             model=model,

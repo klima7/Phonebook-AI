@@ -64,20 +64,23 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
     
     return _to_json(contact)
 
-def search_contacts(name: str, limit: int = 10) -> list[dict]:
+def search_contacts(name: str, limit: int = 10, offset: int = 0) -> list[dict]:
     """
     Search for contacts by name (case-insensitive partial match).
     
     Args:
         name: The name to search for
         limit: Maximum number of results to return (default: 10)
+        offset: Number of results to skip (default: 0)
         
     Returns:
-        list[dict]: List of dictionaries containing the matching contacts with their id, name and phone number
+        list[dict]: List of dictionaries containing the matching contacts with their id, name and phone number, along with extra metadata including the total count of results
     """
     _add_tool_message(f"Searching for \"{name}\"")
-    contacts = get_current_user().contacts.filter(name__icontains=name)[:limit]
-    return _to_json(contacts)
+    contacts = get_current_user().contacts.filter(name__icontains=name)
+    total_count = contacts.count()
+    contacts = contacts[offset:offset+limit]
+    return _to_json(contacts, {"total_count": total_count})
 
 
 def search_contacts_semantic(query: str, limit: int = 10) -> list[dict]:
@@ -107,8 +110,8 @@ def _add_tool_message(message: str):
     )
     
     
-def _to_json(contacts: Contact | list[Contact]):
+def _to_json(contacts: Contact | list[Contact], extra: dict = {}):
     if isinstance(contacts, Contact):
-        return {"id": contacts.id, "name": contacts.name, "phone": contacts.phone}
+        return {"id": contacts.id, "name": contacts.name, "phone": contacts.phone, **extra}
     else:
-        return [{"id": contact.id, "name": contact.name, "phone": contact.phone} for contact in contacts]
+        return [{"id": contact.id, "name": contact.name, "phone": contact.phone, **extra} for contact in contacts]
