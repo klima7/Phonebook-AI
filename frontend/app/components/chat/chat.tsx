@@ -3,8 +3,8 @@ import { Alert } from 'react-bootstrap';
 import { ChatMessagesList } from './chatMessagesList';
 import { ChatSendField } from './chatSendField';
 import { ConversationTabs } from './conversationTabs';
-import { useMessages } from '../hooks/useMessages';
-import { useConversations } from '../hooks/useConversations';
+import { useMessages } from '../../hooks/useMessages';
+import { useConversations } from '../../hooks/useConversations';
 
 interface ChatProps {}
 

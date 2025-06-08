@@ -1,8 +1,8 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import ProtectedRoute from "../components/protectedRoute";
-import ContactsList from "../components/contactsList";
-import Chat from "../components/chat";
+import ContactsList from "../components/contacts/contactsList";
+import Chat from "../components/chat/chat";
 
 export default function HomePage() {
   return (

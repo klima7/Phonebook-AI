@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import ContactCard from "./contactCard";
 import AddContactCard from "./addContactCard";
-import { useContacts } from '../hooks/useContacts';
+import { useContacts } from '../../hooks/useContacts';
 import type { Contact } from '~/models';
 
 const LoadingState = () => (
