@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 interface LoginPanelProps {}
 

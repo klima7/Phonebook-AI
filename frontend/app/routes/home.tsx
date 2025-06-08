@@ -1,6 +1,6 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { motion } from 'framer-motion';
-import ProtectedRoute from "../components/protectedRoute";
+import ProtectedRoute from "../components/auth/protectedRoute";
 import ContactsList from "../components/contacts/contactsList";
 import Chat from "../components/chat/chat";
 

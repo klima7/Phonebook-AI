@@ -1,4 +1,4 @@
-import RegisterPanel from "../components/registerPanel";
+import RegisterPanel from "../components/auth/registerPanel";
 
 export default function RegisterPage() {
   return (

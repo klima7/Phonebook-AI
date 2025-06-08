@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
-import LoginPanel from "../components/loginPanel";
+import LoginPanel from "../components/auth/loginPanel";
 
 export default function LoginPage() {
   const navigate = useNavigate();
