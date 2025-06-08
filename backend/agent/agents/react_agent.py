@@ -13,7 +13,15 @@ def react_agent(conversation: Conversation):
     user_prompt = conversation.last_user_message().content
 
     for chunk in agent.stream(
-        {"messages": [{"role": "user", "content": user_prompt}]}
+        {
+            "messages": [{"role": "user", "content": user_prompt}]
+        },
+        {
+            "configurable": {
+                "thread_id": conversation.id,
+            }
+        }
+        
     ):
         print("chunk", chunk, end="", flush=True)
         
