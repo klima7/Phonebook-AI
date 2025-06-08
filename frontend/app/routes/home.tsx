@@ -20,7 +20,7 @@ export default function HomePage() {
               </motion.div>
             </Col>
             
-            <Col md={5}>
+            {/* <Col md={5}>
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -28,7 +28,7 @@ export default function HomePage() {
               >
                 <Chat/>
               </motion.div>
-            </Col>
+            </Col> */}
           </Row>
         </Container>
       </div>
