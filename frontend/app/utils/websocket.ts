@@ -29,6 +29,8 @@ export function useAuthedWebSocket(
   } else {
     protocols = options.protocols;
   }
+
+  protocols = ["authorization", ...(protocols || [])];
   
   // Only connect if authenticated (unless explicitly overridden)
   const shouldConnectWithAuth = shouldConnect && isAuthenticated;

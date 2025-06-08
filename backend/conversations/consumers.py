@@ -7,7 +7,7 @@ from asgiref.sync import async_to_sync
 class ConversationConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
-        self.accept()
+        self.accept("authorization")
         async_to_sync(self.channel_layer.group_add)(f"conversations_{user.id}", self.channel_name)
 
     def disconnect(self, close_code):
@@ -31,7 +31,7 @@ class MessageConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
         conversation_id = self.scope["url_route"]["kwargs"]["conversation_id"]
-        self.accept()
+        self.accept("authorization")
         async_to_sync(self.channel_layer.group_add)(f"messages_{conversation_id}", self.channel_name)
 
     def disconnect(self, close_code):

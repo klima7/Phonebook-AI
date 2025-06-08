@@ -7,7 +7,7 @@ from asgiref.sync import async_to_sync
 class ContactsConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
-        self.accept()
+        self.accept("authorization")
         async_to_sync(self.channel_layer.group_add)(f"contacts_{user.id}", self.channel_name)
 
     def disconnect(self, close_code):
