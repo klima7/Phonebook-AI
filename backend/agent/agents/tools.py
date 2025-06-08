@@ -9,7 +9,7 @@ def add_tool_message(message: str):
     Message.objects.create(
         conversation=get_current_conversation(),
         content=message,
-        type=MessageType.ASSISTANT,
+        type=MessageType.TOOL,
     )
 
 
