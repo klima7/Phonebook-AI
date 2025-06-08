@@ -10,7 +10,7 @@ import React, { useEffect } from 'react';
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/navbar";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 
 // Import Bootstrap CSS

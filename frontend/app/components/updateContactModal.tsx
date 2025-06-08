@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import type { Contact } from '../services/contactService';
-import PhoneInputField from './PhoneInputField';
+import PhoneInputField from './phoneInputField';
 
 interface UpdateContactModalProps {
   show: boolean;

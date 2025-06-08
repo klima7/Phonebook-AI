@@ -3,7 +3,7 @@ import { Card, Button } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import type { Contact } from '../services/contactService';
 import { Pencil, Trash } from 'react-bootstrap-icons';
-import UpdateContactModal from './UpdateContactModal';
+import UpdateContactModal from './updateContactModal';
 
 interface ContactCardProps {
   contact: Contact;

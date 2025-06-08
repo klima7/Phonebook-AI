@@ -1,7 +1,7 @@
 import { Alert, Spinner, Row, Col } from 'react-bootstrap';
 import { AnimatePresence } from 'framer-motion';
-import ContactCard from "./ContactCard";
-import AddContactCard from "./AddContactCard";
+import ContactCard from "./contactCard";
+import AddContactCard from "./addContactCard";
 import { useContacts } from '../hooks/useContacts';
 
 export default function ContactsList() {

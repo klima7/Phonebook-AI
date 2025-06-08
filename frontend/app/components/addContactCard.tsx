@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import type { Contact } from '../services/contactService';
 import { Plus } from 'react-bootstrap-icons';
-import AddContactModal from './AddContactModal';
+import AddContactModal from './addContactModal';
 
 interface AddContactCardProps {
   onAdd: (contact: Omit<Contact, 'id'>) => Promise<void>;
