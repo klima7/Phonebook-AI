@@ -5,7 +5,8 @@ from asgiref.sync import async_to_sync
 
 from .models import Contact
 from .serializers import ContactSerializer
-from .weaviate import weaviate_add_contact, weaviate_update_contact, weaviate_delete_contact
+from .weaviate import weaviate_delete_contact
+from .tasks import add_contact_to_weaviate, update_contact_in_weaviate
 
 
 @receiver(post_save, sender=Contact)
@@ -36,13 +37,13 @@ def send_delete_notification(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Contact)
-def add_contact_to_weaviate(sender, instance, created, **kwargs):
+def add_contact_to_weaviate_signal(sender, instance, created, **kwargs):
     if created:
-        weaviate_add_contact(instance)
+        add_contact_to_weaviate.delay(instance.id)
     else:
-        weaviate_update_contact(instance)
+        update_contact_in_weaviate.delay(instance.id)
     
     
 @receiver(post_delete, sender=Contact)
-def delete_contact_from_weaviate(sender, instance, **kwargs):
+def delete_contact_from_weaviate_signal(sender, instance, **kwargs):
     weaviate_delete_contact(instance)
