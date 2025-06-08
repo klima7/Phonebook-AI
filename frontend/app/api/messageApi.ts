@@ -4,10 +4,8 @@ import { useApi } from '../utils/api';
 export const useMessageApi = () => {
   const api = useApi();
 
-  const fetchMessages = async (conversationId?: number): Promise<Message[]> => {
-    const url = conversationId 
-      ? `/api/conversations/${conversationId}/messages/` 
-      : '/api/messages/';
+  const fetchMessages = async (conversationId: number): Promise<Message[]> => {
+    const url = `/api/conversations/${conversationId}/messages/`
     
     const response = await api.get(url);
     
