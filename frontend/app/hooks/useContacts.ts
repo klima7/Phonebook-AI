@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Contact } from '../services/contactService';
+import type { Contact } from '~/models';
 import { useContactService } from '../services/contactService';
 import { useAuthedWebSocket } from '~/utils/websocket';
 

@@ -1,8 +1,5 @@
+import type { User } from '~/models';
 import { useApi } from '../utils/api';
-
-export interface User {
-  username: string;
-}
 
 export const useUserService = () => {
   const api = useApi();

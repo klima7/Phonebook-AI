@@ -1,12 +1,5 @@
+import type { Contact } from '~/models';
 import { useApi } from '../utils/api';
-
-export interface Contact {
-  id?: number;
-  name: string;
-  phone: string;
-  created_at?: string;
-  updated_at?: string;
-}
 
 export const useContactService = () => {
   const api = useApi();

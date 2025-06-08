@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useAuthService } from '../services/authService';
-import type { LoginCredentials, RegisterCredentials } from '../services/authService';
+import type { LoginCredentials, RegisterCredentials } from '~/models';
 
 interface AuthContextType {
   token: string | null;

@@ -1,12 +1,5 @@
-export interface LoginCredentials {
-  username: string;
-  password: string;
-}
+import type { LoginCredentials, RegisterCredentials } from "~/models";
 
-export interface RegisterCredentials {
-  username: string;
-  password: string;
-}
 
 export const useAuthService = () => {
 

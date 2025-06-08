@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import ContactCard from "./contactCard";
 import AddContactCard from "./addContactCard";
 import { useContacts } from '../hooks/useContacts';
-import type { Contact } from '../services/contactService';
+import type { Contact } from '~/models';
 
 const LoadingState = () => (
   <div className="text-center py-5">

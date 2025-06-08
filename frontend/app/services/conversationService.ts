@@ -1,11 +1,5 @@
+import type { Conversation } from '~/models';
 import { useApi } from '../utils/api';
-
-export interface Conversation {
-  id?: number;
-  in_progress: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
 
 export const useConversationService = () => {
   const api = useApi();

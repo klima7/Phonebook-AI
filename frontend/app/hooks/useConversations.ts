@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Conversation } from '../services/conversationService';
+import type { Conversation } from '~/models';
 import { useConversationService } from '../services/conversationService';
 import { useAuthedWebSocket } from '~/utils/websocket';
 

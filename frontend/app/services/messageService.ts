@@ -1,13 +1,5 @@
+import type { Message } from '~/models';
 import { useApi } from '../utils/api';
-
-export interface Message {
-  id?: number;
-  type: 'user' | 'assistant' | 'tool';
-  content: string;
-  conversation_id?: number;
-  created_at?: string;
-  updated_at?: string;
-}
 
 export const useMessageService = () => {
   const api = useApi();
