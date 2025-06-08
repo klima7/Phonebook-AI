@@ -1,6 +1,6 @@
 import { Navigate } from "react-router";
 import type { ReactNode } from 'react';
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/UseAuth";
 import { Spinner } from 'react-bootstrap';
 
 interface ProtectedRouteProps {

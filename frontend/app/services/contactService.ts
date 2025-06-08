@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/UseAuth';
 import { useApi } from '../utils/api';
 import { useWebSocket } from '../utils/websocket';
 

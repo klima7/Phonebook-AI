@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import { Container, Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../hooks/UseAuth";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");

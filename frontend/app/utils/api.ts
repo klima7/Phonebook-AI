@@ -1,7 +1,7 @@
 /**
  * Utility for making authenticated API requests
  */
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/UseAuth';
 
 // Check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
