@@ -11,37 +11,51 @@ def add_tool_message(message: str):
         content=message,
         type=MessageType.TOOL,
     )
+    
+    
+def contact_to_json(contacts: Contact | list[Contact]):
+    if isinstance(contacts, Contact):
+        return {"id": contacts.id, "name": contacts.name, "phone": contacts.phone}
+    else:
+        return [{"id": contact.id, "name": contact.name, "phone": contact.phone} for contact in contacts]
 
 
-def create_contact(name: str, phone: str):
+def create_contact(name: str, phone: str) -> dict:
     """
     Create a new contact in the database.
     
     Args:
         name: The contact's name
         phone: The contact's phone number
+        
+    Returns:
+        dict: Dictionary containing the created contact's information (id, name, phone)
     """
     add_tool_message(f"Creating contact: {name} with phone: {phone}")
-    Contact.objects.create(
+    contact = Contact.objects.create(
         user=get_current_user(),
         name=name,
         phone=phone,
     )
+    return contact_to_json(contact)
 
-
-def delete_contact(contact_id: int):
+def delete_contact(contact_id: int) -> str:
     """
     Delete an existing contact from the database.
     
     Args:
         contact_id: The ID of the contact to delete
+        
+    Returns:
+        str: Message indicating the contact was deleted successfully
     """
     contact = Contact.objects.get(id=contact_id)
     add_tool_message(f"Deleting contact: {contact.name} with phone: {contact.phone}")
     contact.delete()
+    return "Contact deleted successfully"
 
 
-def update_contact(contact_id: int, name: str | None = None, phone: str | None = None):
+def update_contact(contact_id: int, name: str | None = None, phone: str | None = None) -> dict:
     """
     Update an existing contact's information.
     
@@ -49,6 +63,9 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
         contact_id: The ID of the contact to update
         name: Optional new name for the contact
         phone: Optional new phone number for the contact
+        
+    Returns:
+        dict: Dictionary containing the updated contact's information (id, name, phone)
     """
     contact = Contact.objects.get(id=contact_id)
     
@@ -64,9 +81,10 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
     if phone:
         contact.phone = phone
     contact.save()
+    
+    return contact_to_json(contact)
 
-
-def search_contacts(name: str, limit: int = 10):
+def search_contacts(name: str, limit: int = 10) -> list[dict]:
     """
     Search for contacts by name (case-insensitive partial match).
     
@@ -75,9 +93,8 @@ def search_contacts(name: str, limit: int = 10):
         limit: Maximum number of results to return (default: 10)
         
     Returns:
-        A JSON string containing the matching contacts with their name and phone number
+        list[dict]: List of dictionaries containing the matching contacts with their id, name and phone number
     """
     add_tool_message(f"Searching for: {name}")
     contacts = get_current_user().contacts.filter(name__icontains=name)[:limit]
-    contacts_json = [{"id": contact.id, "name": contact.name, "phone": contact.phone} for contact in contacts]
-    return json.dumps(contacts_json, indent=2, ensure_ascii=False)
+    return contact_to_json(contacts)

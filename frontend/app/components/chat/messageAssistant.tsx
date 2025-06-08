@@ -17,9 +17,6 @@ export const MessageAssistant: React.FC<MessageAssistantProps> = ({ message }) =
       style={{ maxWidth: '75%' }}
     >
       <div className="mt-3 p-3 rounded-3 bg-secondary text-white">
-        <div className="mb-1 small">
-          Assistant
-        </div>
         <div style={{ whiteSpace: 'pre-wrap' }}>
           {message.content}
         </div>

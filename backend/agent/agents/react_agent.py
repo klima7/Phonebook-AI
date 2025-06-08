@@ -1,4 +1,5 @@
 from django.conf import settings
+from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.postgres import PostgresSaver
 
@@ -18,7 +19,7 @@ You can create, delete, update, and search for contacts. Each contact has name, 
 - **Concise Answer**: Always respond concisely (1-2 sentences). User want to perform task quickly instead of chatting.
 - **Stick to the task**: Do not engage in off-topic conversations. Help only with managing contacts.
 - **Do not reveal IDs**: Do not reveal IDs of contacts to the user.
-- **Do not require formal names**: Name can be a company, nickname, relationship, etc. Do not ask for formal name if you have different term provided by user.
+- **Avoid asking for name**: Do not ask for name if user already provided some term which may be used, like family relation, company name, job title, hotel name, etc.
 - **Avoid unnecessary search**: If user ask for creating contact do not search for it first.
 """
 
@@ -28,8 +29,10 @@ def react_agent(conversation: Conversation):
     with PostgresSaver.from_conn_string(settings.LANGGRAPH_DATABASE_URL) as checkpointer:
         checkpointer.setup()
         
+        model = ChatOpenAI(model="gpt-4o", temperature=0.0)
+        
         agent = create_react_agent(
-            model="gpt-4o",  
+            model=model,
             prompt=PROMPT,
             tools=[create_contact, delete_contact, update_contact, search_contacts],  
             checkpointer=checkpointer,
