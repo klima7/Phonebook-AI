@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { PlusLg, ChatDots } from 'react-bootstrap-icons';
 import { formatDistanceToNow } from 'date-fns';
 import type { Conversation } from '../services/conversationService';
@@ -17,13 +17,16 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
   onSelectConversation,
 }) => {
   return (
-    <div className="mb-3 position-relative">
+    <motion.div 
+      className="mb-3 position-relative"
+      layout
+    >
       <div className="position-relative">
-        <div 
+        <motion.div 
           className="d-flex overflow-auto p-2" 
+          layout
           style={{ 
             scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
             overflowX: 'auto',
             overflowY: 'hidden'
           }}
@@ -31,7 +34,6 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
           <div 
             style={{ 
               position: 'absolute', 
-              top: 0, 
               right: 0, 
               width: '60px', 
               height: '100%', 
@@ -56,53 +58,66 @@ export const ConversationTabs: React.FC<ConversationTabsProps> = ({
             </Button>
           </motion.div>
           
-          {conversations.map((conversation) => (
-            <OverlayTrigger
-              key={conversation.id}
-              placement="bottom"
-              overlay={
-                <Tooltip id={`conversation-${conversation.id}`}>
-                  {conversation.created_at ? 
-                    formatDistanceToNow(new Date(conversation.created_at), { addSuffix: true }) : 
-                    'Unknown time'}
-                </Tooltip>
-              }
-            >
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="me-2 position-relative"
+          <AnimatePresence mode="popLayout">
+            {conversations.map((conversation) => (
+              <OverlayTrigger
+                key={conversation.id}
+                placement="bottom"
+                overlay={
+                  <Tooltip id={`conversation-${conversation.id}`}>
+                    {conversation.created_at ? 
+                      formatDistanceToNow(new Date(conversation.created_at), { addSuffix: true }) : 
+                      'Unknown time'}
+                  </Tooltip>
+                }
               >
-                <Button
-                  variant={activeConversationId === conversation.id ? "primary" : "outline-secondary"}
-                  className="d-flex align-items-center justify-content-center"
-                  style={{ width: '42px', height: '42px' }}
-                  onClick={() => onSelectConversation(conversation.id!)}
-                  aria-label={`Conversation from ${conversation.created_at ? 
-                    formatDistanceToNow(new Date(conversation.created_at), { addSuffix: true }) : 
-                    'unknown time'}`}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="me-2 position-relative"
+                  layout
                 >
-                  <ChatDots size={16} />
-                </Button>
-                {conversation.in_progress && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: '4px',
-                      right: '4px',
-                      width: '8px',
-                      height: '8px',
-                      backgroundColor: 'lightgreen',
-                      borderRadius: '50%',
-                      zIndex: 2
-                    }}
-                  />
-                )}
-              </motion.div>
-            </OverlayTrigger>
-          ))}
-        </div>
+                  <Button
+                    variant={activeConversationId === conversation.id ? "primary" : "outline-secondary"}
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ width: '42px', height: '42px' }}
+                    onClick={() => onSelectConversation(conversation.id!)}
+                    aria-label={`Conversation from ${conversation.created_at ? 
+                      formatDistanceToNow(new Date(conversation.created_at), { addSuffix: true }) : 
+                      'unknown time'}`}
+                  >
+                    <ChatDots size={16} />
+                  </Button>
+                  {conversation.in_progress && (
+                    <motion.div
+                      animate={{ 
+                        opacity: [0.6, 1, 0.6], 
+                        scale: [0.9, 1.1, 0.9] 
+                      }}
+                      transition={{ 
+                        repeat: Infinity,
+                        duration: 1.5
+                      }}
+                      style={{
+                        position: 'absolute',
+                        bottom: '4px',
+                        right: '4px',
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: 'lightgreen',
+                        borderRadius: '50%'
+                      }}
+                    />
+                  )}
+                </motion.div>
+              </OverlayTrigger>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }; 
