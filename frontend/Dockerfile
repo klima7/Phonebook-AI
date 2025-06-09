@@ -11,6 +11,8 @@ RUN npm ci
 # Expose default React dev server port
 EXPOSE 3000
 
+COPY . .
+
 # Set development command with auto-reload
 CMD npm run dev -- --host 0.0.0.0 --port 3000
 
