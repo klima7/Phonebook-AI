@@ -3,6 +3,7 @@ from conversations.models import Message, MessageType
 from contacts.models import Contact
 from agent.context import get_current_user, get_current_conversation
 from contacts.weaviate import search_user_contacts
+import re
 
 def create_contact(name: str, phone: str) -> dict:
     """
@@ -74,30 +75,39 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
     
     return _to_json(contact)
 
-def search_contacts(name: str, limit: int = 10, offset: int = 0) -> list[dict]:
+def search_contacts(regex: str, limit: int = 20, offset: int = 0) -> list[dict]:
     """
-    Search for contacts by name (case-insensitive partial match).
+    Search for contacts by name using regex pattern matching.
     
     Args:
-        name: The name to search for
+        name: The regex pattern to search for in contact names
         limit: Maximum number of results to return (default: 10)
         offset: Number of results to skip (default: 0)
         
     Returns:
         list[dict]: List of dictionaries containing the matching contacts with their id, name and phone number, along with extra metadata including the total count of results
     """
-    _add_tool_message(f"Searching for \"{name}\"")
-    contacts = get_current_user().contacts.filter(name__icontains=name)
-    total_count = contacts.count()
-    contacts = contacts[offset:offset+limit]
-    return _to_json(contacts, {"total_count": total_count})
+    _add_tool_message(f"Searching for pattern \"{regex}\"")
+    
+    # Get all user contacts
+    all_contacts = get_current_user().contacts.all()
+    
+    # Apply regex pattern matching
+    pattern = re.compile(regex, re.IGNORECASE)
+    matching_contacts = [contact for contact in all_contacts if pattern.search(contact.name)]
+    
+    # Calculate total count and apply pagination
+    total_count = len(matching_contacts)
+    paginated_contacts = matching_contacts[offset:offset+limit]
+    
+    return _to_json(paginated_contacts, {"total_count": total_count})
 
 
-def search_contacts_semantic(query: str, limit: int = 10) -> list[dict]:
+def search_contacts_semantic(query: str, limit: int = 20) -> list[dict]:
     """
     Search for contacts using semantic search (meaning-based) rather than exact text matching.
     
-    Unlike search_contacts which uses case-insensitive partial matching, this function
+    Unlike search_contacts which uses regex matching, this function
     uses vector embeddings to find contacts semantically related to the query.
     Use it for searching for example "brother", "grandparent", "womans"
     

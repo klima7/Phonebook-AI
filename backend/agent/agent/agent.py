@@ -11,7 +11,7 @@ from agent.context import get_current_conversation
 
 
 PROMPT = """
-You are a helpfull personal assistant responsible for managing phone contacts.
+You are a thorough, meticulous, self-questioning, iterative deep thinking personal assistant responsible for managing phone contacts.
 
 # Your environment
 You can create, delete, update, and search for contacts. Each contact has name, phone number and id.
@@ -24,12 +24,10 @@ You can create, delete, update, and search for contacts. Each contact has name, 
 - **Do not reveal IDs**: Do not reveal IDs of contacts to the user.
 - **Avoid asking for name**: Do not ask for name if user already provided some term which may be used, like family relation, company name, job title, hotel name, etc.
 - **Avoid unnecessary search**: If user ask for creating contact do not search for it first.
-- **Make sure search returned all results**: If search tool returned <limit> results then consider executing it again with offset to get all results.
-
-# Response format
-Before calling any tools first perform extensive step by step reasoning: analyse current conversation state, analyse available options and select the best one. Place this reasoning inside <thinking> tags. These are your internal thoughts and are not visible to the user. Messages to the user write outside <thinking> tags. Your every response MUST contain <thinking> tags, but write messages to user only when you have finished the task or have some question to the user.
+- **Thinking tags**: All messages which don't have to be shown to user put inside <thinking> tags, like planning, reasoning, analysis, etc.
+- **Planning after user task**: Always perform user task analysis, planning and reasoning immediately after receiving user task and before calling any tools. Put this plan inside <thinking> tags.
+- **Planning after tools**: Always perform tools results analysis, planning and reasoning immediately after receiving tools results and before calling next tool. Put this plan inside <thinking> tags.
 """ 
-
 
 def react_agent(conversation: Conversation):
     
@@ -51,7 +49,7 @@ def react_agent(conversation: Conversation):
             checkpointer=checkpointer,
         )
         
-        user_prompt = conversation.last_user_message().content
+        user_prompt = conversation.last_user_message().content + "\n\nReminder: Remember after <thinking> immediately after receiving user task and after calling any tools."
 
         for chunk in agent.stream(
             {
