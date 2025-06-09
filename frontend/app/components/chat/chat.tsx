@@ -11,20 +11,17 @@ interface ChatProps {}
 export default function Chat({}: ChatProps) {
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const { conversations } = useConversations();
-  const { messages, error, addMessage, addThinkingMessage, removeThinkingMessage } = useMessages(activeConversationId);
+  const { messages, error, addMessage } = useMessages(activeConversationId);
 
   const activeConversation = conversations.find(c => c.id === activeConversationId);
   const activeConversationInProgress = activeConversation?.in_progress ?? false;
 
   const handleSend = async (message: string) => {
-    const thinkingMsg = addThinkingMessage("Processing your request...");
     try {
       const new_message = await addMessage(message);
       setActiveConversationId(new_message.conversation_id!);
-    } finally {
-      if (thinkingMsg?.id) {
-        removeThinkingMessage(thinkingMsg.id);
-      }
+    } catch (error) {
+      console.error("Error sending message:", error);
     }
   };
 
