@@ -106,6 +106,7 @@ def search_contacts(regex: str, limit: int = 20, offset: int = 0) -> list[dict]:
 def search_contacts_semantic(query: str, limit: int = 20) -> list[dict]:
     """
     Search for contacts using semantic search (meaning-based) rather than exact text matching.
+    Results from this functions may be not accurate and must be validated.
     
     Unlike search_contacts which uses regex matching, this function
     uses vector embeddings to find contacts semantically related to the query.
