@@ -28,15 +28,17 @@ SECRET_KEY = 'django-insecure-spzt=632zrsgeu54vax1hmtf#dl3^@pv(3obuxz7#*ts93giuj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-
 REDIS_URL = os.getenv("REDIS_URL")
 DJANGO_DATABASE_URL = os.getenv("DJANGO_DATABASE_URL")
 LANGGRAPH_DATABASE_URL = os.getenv("LANGGRAPH_DATABASE_URL")
 WEAVIATE_HOST = os.getenv("WEAVIATE_HOST")
+HOST_NAME = os.getenv("WEAVIATE_HOST")
+ORIGIN_URL = os.getenv("ORIGIN_URL")
+
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [ORIGIN_URL, 'http://localhost']
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 INSTALLED_APPS = [
