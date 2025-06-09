@@ -1,5 +1,4 @@
-import json
-
+from django.db import IntegrityError
 from conversations.models import Message, MessageType
 from contacts.models import Contact
 from agent.context import get_current_user, get_current_conversation
@@ -17,11 +16,16 @@ def create_contact(name: str, phone: str) -> dict:
         dict: Dictionary containing the created contact's information (id, name, phone)
     """
     _add_tool_message(f"Creating contact \"{name}\" with phone \"{phone}\"")
-    contact = Contact.objects.create(
-        user=get_current_user(),
-        name=name,
-        phone=phone,
-    )
+    
+    try:
+        contact = Contact.objects.create(
+            user=get_current_user(),
+            name=name,
+            phone=phone,
+        )
+    except IntegrityError:
+        raise Exception("Contact with this name already exists")
+    
     return _to_json(contact)
 
 def delete_contact(contact_id: int) -> dict:
@@ -34,8 +38,12 @@ def delete_contact(contact_id: int) -> dict:
     Returns:
         dict: Dictionary containing the deleted contact's information (id, name, phone)
     """
-    contact = Contact.objects.get(id=contact_id)
+    contact = get_current_user().contacts.filter(id=contact_id).first()
+    if contact is None:
+        raise Exception("Contact not found")
+    
     _add_tool_message(f"Deleting \"{contact.name}\"")
+    
     contact.delete()
     return _to_json(contact)
 
@@ -52,7 +60,9 @@ def update_contact(contact_id: int, name: str | None = None, phone: str | None =
     Returns:
         dict: Dictionary containing the updated contact's information (id, name, phone)
     """
-    contact = Contact.objects.get(id=contact_id)
+    contact = get_current_user().contacts.filter(id=contact_id).first()
+    if contact is None:
+        raise Exception("Contact not found")
     
     _add_tool_message(f"Updating contact \"{contact.name}\"")
     
