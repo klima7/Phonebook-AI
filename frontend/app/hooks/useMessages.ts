@@ -91,10 +91,31 @@ export const useMessages = (conversationId: number | null) => {
     }
   };
 
+  const addThinkingMessage = (content: string) => {
+    if (conversationId === null) return null;
+    
+    const thinkingMessage: Message = {
+      id: Date.now(), // Temporary ID
+      type: 'thinking',
+      content: content,
+      conversation_id: conversationId,
+      created_at: new Date().toISOString()
+    };
+    
+    setMessages(prev => [...prev, thinkingMessage]);
+    return thinkingMessage;
+  };
+
+  const removeThinkingMessage = (id: number) => {
+    setMessages(prev => prev.filter(msg => msg.id !== id));
+  };
+
   return {
     messages,
     loading,
     error,
-    addMessage
+    addMessage,
+    addThinkingMessage,
+    removeThinkingMessage
   };
 };

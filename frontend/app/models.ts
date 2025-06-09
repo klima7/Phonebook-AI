@@ -29,7 +29,7 @@ export interface Conversation {
 
 export interface Message {
     id?: number;
-    type: 'user' | 'assistant' | 'tool';
+    type: 'user' | 'assistant' | 'tool' | 'thinking';
     content: string;
     conversation_id?: number;
     created_at?: string;

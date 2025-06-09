@@ -1,3 +1,5 @@
+import re
+
 from django.conf import settings
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
@@ -5,6 +7,7 @@ from langgraph.checkpoint.postgres import PostgresSaver
 
 from conversations.models import Conversation, Message, MessageType
 from agent.agent.tools import create_contact, delete_contact, update_contact, search_contacts, search_contacts_semantic
+from agent.context import get_current_conversation
 
 
 PROMPT = """
@@ -22,7 +25,10 @@ You can create, delete, update, and search for contacts. Each contact has name, 
 - **Avoid asking for name**: Do not ask for name if user already provided some term which may be used, like family relation, company name, job title, hotel name, etc.
 - **Avoid unnecessary search**: If user ask for creating contact do not search for it first.
 - **Make sure search returned all results**: If search tool returned <limit> results then consider executing it again with offset to get all results.
-"""
+
+# Response format
+Before calling any tools first perform extensive step by step reasoning: analyse current conversation state, analyse available options and select the best one. Place this reasoning inside <thinking> tags. These are your internal thoughts and are not visible to the user. Messages to the user write outside <thinking> tags. Your every response MUST contain <thinking> tags, but write messages to user only when you have finished the task or have some question to the user.
+""" 
 
 
 def react_agent(conversation: Conversation):
@@ -63,8 +69,25 @@ def react_agent(conversation: Conversation):
                 messages = chunk["agent"]["messages"]
                 for message in messages:
                     if message.content.strip():
-                        Message.objects.create(
-                            conversation=conversation,
-                            content=message.content,
-                            type=MessageType.ASSISTANT,
-                        )
+                        handle_response(message.content)
+
+
+def handle_response(response: str):
+    response = response.strip()
+    thinking_match = re.search(r'<thinking>(.*?)</thinking>', response, re.DOTALL)
+    thinking_content = thinking_match.group(1).strip() if thinking_match else None
+    user_message = re.sub(r'<thinking>.*?</thinking>', '', response, flags=re.DOTALL).strip()
+    
+    if thinking_content:
+        Message.objects.create(
+            conversation=get_current_conversation(),
+            content=thinking_content,
+            type=MessageType.THINKING,
+        )
+        
+    if user_message:
+        Message.objects.create(
+            conversation=get_current_conversation(),
+            content=user_message,
+            type=MessageType.ASSISTANT, 
+        )

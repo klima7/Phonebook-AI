@@ -3,6 +3,7 @@ import type { Message } from '~/models';
 import { MessageUser } from './messageUser';
 import { MessageAssistant } from './messageAssistant';
 import { MessageTool } from './messageTool';
+import { MessageThinking } from './messageThinking';
 
 interface ChatMessagesListProps {
   messages: Message[];
@@ -33,6 +34,8 @@ export const ChatMessagesList: React.FC<ChatMessagesListProps> = ({ messages }) 
         return <MessageAssistant key={msg.id} message={msg} />;
       case 'tool':
         return <MessageTool key={msg.id} message={msg} />;
+      case 'thinking':
+        return <MessageThinking key={msg.id} message={msg} />;
       default:
         return null;
     }

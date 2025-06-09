@@ -6,6 +6,7 @@ class MessageType(models.TextChoices):
     USER = "user", "User"
     ASSISTANT = "assistant", "Assistant"
     TOOL = "tool", "Tool"
+    THINKING = "thinking", "Thinking"
     
     
 class Conversation(models.Model):
