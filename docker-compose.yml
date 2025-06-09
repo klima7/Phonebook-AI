@@ -117,6 +117,7 @@ services:
     restart: always
     volumes:
       - ./frontend:/app
+      - node_modules_volume:/app/node_modules
 
   nginx:
     image: nginx:latest
@@ -128,3 +129,6 @@ services:
     depends_on:
       - backend
       - frontend
+
+volumes:
+  node_modules_volume:
